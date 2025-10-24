@@ -1,0 +1,303 @@
+\documentclass[a4paper, 10pt]{article}
+
+% pdfLaTeX용 한글 패키지
+\usepackage{kotex}
+
+% 기본 패키지
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue]{hyperref} % 하이퍼링크 (가장 마지막에)
+
+% 페이지 여백 설정
+\geometry{
+  top=2.5cm, 
+  bottom=2.5cm, 
+  left=2cm, 
+  right=2cm,
+  headheight=20pt
+}
+
+% 머리글 및 바닥글 설정
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\lhead{\small 2025학년도 중간고사 대비 연습문제}
+\chead{\small\textbf{컴퓨터 네트워크}}
+\rhead{\small\thepage}
+\cfoot{\scriptsize ※ 모든 문제의 답은 지정된 곳에 정확히 기입하시오.}
+
+% 원형 숫자
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+  \node[shape=circle,draw,inner sep=0.7pt,minimum size=0.7em,line width=0.5pt] (char) {\small #1};}}
+
+% 객관식 문항 스타일
+\newlist{mchoice}{enumerate}{1}
+\setlist[mchoice,1]{
+  label=\protect\circled{\arabic*},
+  leftmargin=2em,
+  itemsep=0.3em,
+  parsep=0pt
+}
+
+% 커스텀 명령어
+\newcommand{\ansline}[1]{\underline{\hspace{#1}}}
+\newcommand{\sectionbox}[1]{
+  \vspace{0.5em}
+  \noindent\fbox{\textbf{#1}}
+  \vspace{0.5em}
+}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+% 시험지 제목 블록
+\begin{center}
+  \Large\textbf{2025학년도 컴퓨터네트워크 중간고사 대비 연습문제지}\\[8pt]
+  \large\textbf{Chapter 1. Introduction}\\[5pt]
+  \small\textbf{contact: \href{mailto:wrim0923@ewhain.net}{wrim0923@ewhain.net} | github: \href{https://github.com/RainyForest23}{RainyForest23}}\\[5pt]
+  \small\textcolor{gray}{Last updated: \today}
+\end{center}
+
+\vspace{0.5cm}
+
+% 수험 정보
+\begin{tabular}{|m{0.48\textwidth}|m{0.48\textwidth}|}
+\hline
+\textbf{성명:} \hfill & \textbf{학번:} \hfill \\[0.8em]
+\hline
+\end{tabular}
+\vspace{1em}
+
+\noindent
+{\small ※ 각 문항의 정답을 해당란에 정확히 기입하시오. (총 30문항)}
+
+\vspace{0.5em}
+\noindent\rule{\textwidth}{0.8pt}
+\vspace{0.5em}
+
+% 문제 시작
+\begin{enumerate}[itemsep=2em, leftmargin=2em, label={}]
+
+\item[] \sectionbox{I. 용어 및 기본 개념 (5문제)}
+
+\item[\textbf{1.}] 다음 중 인터넷 프로토콜의 역할에 대한 설명으로 가장 적절한 것은?
+\begin{mchoice}
+    \item 네트워크 엔티티 간에 전송 및 수신되는 메시지의 형식과 순서를 정의하고, 메시지 송수신 시 취해야 할 동작을 규정한다.
+    \item 물리적 통신 링크의 전송 속도(대역폭)를 결정한다.
+    \item 인터넷 표준 기관인 IETF의 물리적 위치를 지정한다.
+    \item 종단 시스템(End system)을 라우터에 물리적으로 연결하는 방법을 정의한다.
+\end{mchoice}
+
+\item[\textbf{2.}] 종단 시스템(End System)을 지칭하는 다른 용어는 무엇이며, 이는 인터넷의 어디에서 네트워크 애플리케이션을 실행하는가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 다른 용어: \ansline{3cm}
+    \item 위치: 인터넷의 "\ansline{3cm}"
+\end{enumerate}
+
+\item[\textbf{3.}] "네트워크의 네트워크(network of networks)"라는 개념이 의미하는 것은 무엇인가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 인터넷은 상호 연결된 \ansline{4cm}들로 구성되어 있음을 의미한다.
+\end{enumerate}
+
+\item[\textbf{4.}] 인터넷 표준 문서의 이름과, 해당 표준을 개발하는 기관의 약자를 각각 쓰시오.
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 표준 문서 이름: \ansline{4cm}
+    \item 표준 개발 기관 (3/4/5 계층): \ansline{4cm}
+\end{enumerate}
+
+\item[\textbf{5.}] 다음은 패킷 스위치(Packet Switch)의 종류를 설명한다. 빈칸에 알맞은 용어를 넣으시오.
+\begin{enumerate}[label={}, itemsep=0.3em, leftmargin=1.5em]
+    \item 패킷을 (데이터 청크) 전달하는 장치에는 \ansline{3cm}와(과) \ansline{3cm}가(이) 있다.
+\end{enumerate}
+
+
+\item[] \sectionbox{II. 네트워크 엣지 및 접속 네트워크 (5문제)}
+
+\item[\textbf{6.}] 다음 중 액세스 네트워크(Access Network)에 대한 설명으로 거짓은? (\hspace{1cm})
+\begin{enumerate}[label={}, itemsep=0.3em, leftmargin=1.5em]
+    \item 액세스 네트워크는 종단 시스템(호스트)을 다른 먼 종단 시스템으로 가는 경로상의 첫 번째 라우터(엣지 라우터)에 물리적으로 연결하는 네트워크이다.
+\end{enumerate}
+
+\item[\textbf{7.}] 주거용 액세스 네트워크 기술 중, 케이블 TV 서비스가 제공되는 지역에 적용 가능하며 데이터와 TV가 공유 케이블 분배 네트워크를 통해 다른 주파수로 전송되는 기술은 무엇인가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 기술명: \ansline{5cm}
+\end{enumerate}
+
+\item[\textbf{8.}] DSL (Digital Subscriber Line)과 HFC (Hybrid Fiber Coax)의 주요 차이점은 무엇인가?
+\begin{mchoice}
+    \item HFC는 중앙 오피스까지 전용 액세스를 제공하지만 DSL은 케이블 헤드엔드까지 공유 액세스를 사용한다.
+    \item DSL은 기존 전화선을 사용하지만 HFC는 전용 광섬유 케이블만 사용한다.
+    \item DSL은 중앙 오피스까지 전용 액세스 라인을 가지는 반면, HFC는 케이블 헤드엔드까지 액세스 네트워크를 여러 가정이 공유한다.
+    \item DSL은 유선 통신만 지원하지만 HFC는 무선 통신만 지원한다.
+\end{mchoice}
+
+\item[\textbf{9.}] FTTH (Fiber To The Home) 기술의 두 가지 광 분배 네트워크(ODN) 아키텍처는 무엇인가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item \ansline{5cm} (스위치드 이더넷 방식)
+    \item \ansline{5cm} (수동 분배기 방식)
+\end{enumerate}
+
+\item[\textbf{10.}] FWA (Fixed Wireless Access) 기술은 주로 어떤 네트워크 기술을 기반으로 하는가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 기반 기술: \ansline{5cm}
+\end{enumerate}
+
+
+\item[] \sectionbox{III. 네트워크 코어 및 스위칭 (5문제)}
+
+\item[\textbf{11.}] 서킷 스위칭(Circuit Switching) 방식의 주요 특징 세 가지를 설명하시오.
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 통신 전에 자원 \ansline{4cm}이(가) 이루어진다.
+    \item 자원이 통화 중 사용되지 않더라도 \ansline{4cm} 자원이다 (공유하지 않음).
+    \item 일반적으로 \ansline{4cm} 성능을 보장한다.
+\end{enumerate}
+
+\item[\textbf{12.}] 패킷 스위칭(Packet Switching)이 서킷 스위칭보다 사용자들에게 네트워크 사용을 더 많이 허용할 수 있는 이유는 무엇인가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item \ansline{5cm}이(가) 가능하기 때문이다. (참고: 특히 버스티(bursty) 데이터 전송에 적합하다.)
+\end{enumerate}
+
+\item[\textbf{13.}] 패킷 스위칭 네트워크에서 라우터가 수행하는 두 가지 핵심 기능은 무엇인가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item \ansline{3cm}: 도착하는 패킷을 라우터의 입력 링크에서 적절한 출력 링크로 이동시키는 지역적(local) 동작.
+    \item \ansline{3cm}: 패킷이 취할 송신지-수신지 경로를 결정하는 전역적(global) 동작.
+\end{enumerate}
+
+\item[\textbf{14.}] 패킷 스위칭에서 Store-and-forward (저장 후 전달) 지연이란 무엇인가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item \ansline{5cm}이(가) 다음 링크로 전송되기 전에 라우터에 도착해야 하는 데 걸리는 시간이다.
+\end{enumerate}
+
+\item[\textbf{15.}] Circuit Switching 망에서 TDM과 FDM을 비교하여 시간 슬롯 할당 방식의 차이점을 설명하시오.
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item FDM은 광학적/전자기적 \ansline{3cm}를(을) 좁은 대역으로 나누어 각 통화에 할당하는 반면, TDM은 \ansline{3cm}을(를) 슬롯으로 나누어 각 통화에 할당한다.
+\end{enumerate}
+
+
+\item[] \sectionbox{IV. 성능: 지연, 손실, 처리량 (5문제)}
+
+\item[\textbf{16.}] 패킷이 라우터를 통과할 때 발생하는 네 가지 지연 요소를 나열하시오.
+\begin{itemize}[itemsep=0.3em, leftmargin=1.5em]
+    \item dproc: \ansline{3cm} delay
+    \item dqueue: \ansline{3cm} delay
+    \item dtrans: \ansline{3cm} delay
+    \item dprop: \ansline{3cm} delay
+\end{itemize}
+
+\item[\textbf{17.}] $\text{d}_{\text{prop}}$ (전파 지연)과 $\text{d}_{\text{trans}}$ (전송 지연)을 정의하는 공식은 무엇인가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item $\text{d}_{\text{trans}}$ = \ansline{4cm} (단, L은 패킷 길이(bits), R은 링크 대역폭(bps))
+    \item $\text{d}_{\text{prop}}$ = \ansline{4cm} (단, d는 물리적 링크 길이, s는 전파 속도)
+\end{enumerate}
+
+\item[\textbf{18.}] 패킷 큐잉 지연(Queueing delay)과 트래픽 강도(Traffic intensity, La/R) 사이의 관계를 설명하시오.
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 트래픽 강도가 \ansline{4cm}에 가까워질수록 큐잉 지연은 급격히 증가한다.
+\end{enumerate}
+
+\item[\textbf{19.}] 패킷 손실(Packet Loss)은 어떻게 발생하는가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 라우터 버퍼(큐)의 용량이 \ansline{4cm}이므로, 도착한 패킷이 꽉 찬 큐에 도달하면 드롭(손실)된다.
+\end{enumerate}
+
+\item[\textbf{20.}] 종단 간 처리량(End-end throughput)을 결정하는 요소는 무엇이며, 이를 무엇이라고 부르는가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 요소: 종단 간 경로를 따라 흐름을 제한하는 링크.
+    \item 명칭: \ansline{4cm} 링크.
+\end{enumerate}
+
+
+\item[] \sectionbox{V. 인터넷 구조 및 계층 (5문제)}
+
+\item[\textbf{21.}] 가까운 거리에 위치하며 계층 수준이 비슷한 두 ISP가 상호 트래픽을 중개자 없이 직접 주고받기 위해 연결되는 방식을 무엇이라고 하는가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 방식: \ansline{4cm}
+    \item 이때 일반적으로 지불은 발생하는가? \ansline{2cm}
+\end{enumerate}
+
+\item[\textbf{22.}] 다수의 ISP들이 한 지점에서 만나 연결될 수 있도록 제3자 회사에서 스위치와 시설을 제공하는 독립적인 건물을 무엇이라고 하는가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item \ansline{5cm} (약자: IXP)
+\end{enumerate}
+
+\item[\textbf{23.}] 다른 상위 제공업체 ISP에 서비스 요금을 지불할 필요가 없는 최상위 ISP를 무엇이라고 부르는가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item \ansline{5cm} ISP
+\end{enumerate}
+
+\item[\textbf{24.}] Tier-1 ISP를 제외한 ISP가 두 개 이상의 Provider ISP에 연결하는 방식은 무엇이며, 이러한 방식의 장점은 무엇인가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 방식: \ansline{5cm}
+\end{enumerate}
+
+\item[\textbf{25.}] 인터넷 프로토콜 스택 5계층을 나열하고, 각 계층의 프로토콜 예시를 하나씩 쓰시오.
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{계층} & \textbf{계층 이름} & \textbf{프로토콜 예시} \\
+    \hline
+    5 & Application & \ansline{3.5cm} \\
+    \hline
+    4 & Transport & \ansline{3.5cm} \\
+    \hline
+    3 & Network & \ansline{3.5cm} \\
+    \hline
+    2 & Link & \ansline{3.5cm} \\
+    \hline
+    1 & Physical & (Bits on the wire) \\
+    \hline
+\end{tabular}
+\end{center}
+
+
+\item[] \sectionbox{VI. 보안 및 기타 (5문제)}
+
+\item[\textbf{26.}] 다음 중 Vint Cerf와 Robert Kahn이 제시한 인터넷워킹 원칙에 해당하지 않는 것은?
+\begin{mchoice}
+    \item 최소주의(Minimalism)와 자율성(Autonomy).
+    \item 최선형 노력(Best effort) 서비스 모델.
+    \item 라우터는 상태를 유지하지 않는다 (Stateless routers).
+    \item 최종 사용자에게 엄격한 서비스 품질(QoS) 보장.
+\end{mchoice}
+
+\item[\textbf{27.}] DoS (Denial of Service) 공격의 목표는 무엇이며, 이 공격을 수행하기 위해 공격자들이 사용하는 세 가지 단계를 설명하시오.
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 목표: 합법적인 트래픽이 자원을 사용할 수 없도록 \ansline{2.5cm} 또는 \ansline{2.5cm}를 위조 트래픽으로 압도하는 것.
+    \item 3단계: 1. \ansline{2cm} 선택 2. 호스트 침투 3. 침해된 호스트에서 \ansline{2cm}(으)로 패킷 전송.
+\end{enumerate}
+
+\item[\textbf{28.}] 다른 프로그램에 기생하여 실행되며 사용자의 개입이 필요한 멀웨어(Malware) 유형은 무엇인가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item 멀웨어 유형: \ansline{4cm}
+\end{enumerate}
+
+\item[\textbf{29.}] IP 스푸핑(IP spoofing)이란 무엇인가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item \ansline{4cm} 주소를 위조한 패킷을 전송하는 행위이다.
+\end{enumerate}
+
+\item[\textbf{30.}] L-bit 크기의 패킷이 라우터에 들어올 때, 라우터의 포워딩 테이블을 참조하여 출력 포트를 결정하는 데 소요되는 지연은 무엇인가?
+\begin{enumerate}[label=\alph*., itemsep=0.3em, leftmargin=1.5em]
+    \item \ansline{5cm} delay.
+\end{enumerate}
+
+\end{enumerate}
+
+\vfill
+\begin{center}
+  \rule{0.9\textwidth}{0.4pt}\\[8pt]
+  {\small\textbf{--- 수고하셨습니다 ---}}\\[6pt]
+  {\scriptsize ※ 본 문제지는 학습 목적으로 제작되었습니다.}
+\end{center}
+
+\end{document}

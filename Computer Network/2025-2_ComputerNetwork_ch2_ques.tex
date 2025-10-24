@@ -1,0 +1,633 @@
+\documentclass[a4paper, 10pt]{article}
+
+% pdfLaTeX용 한글 패키지
+\usepackage{kotex}
+
+% 기본 패키지
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+% \usepackage{multicol} % <-- 제거됨
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{hyperref}
+
+% 페이지 여백 설정
+\geometry{
+  top=2.5cm, 
+  bottom=2.5cm, 
+  left=2cm, 
+  right=2cm,
+  headheight=20pt
+}
+
+% 머리글 및 바닥글 설정
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\lhead{\small 2025학년도 중간고사 대비 연습문제}
+\chead{\small\textbf{컴퓨터 네트워크}}
+\rhead{\small\thepage}
+\cfoot{\scriptsize ※ 모든 문제의 답은 지정된 곳에 정확히 기입하시오.}
+
+% 원형 숫자
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+  \node[shape=circle,draw,inner sep=0.7pt,minimum size=0.7em,line width=0.5pt] (char) {\small #1};}}
+
+% 객관식 문항 스타일
+\newlist{mchoice}{enumerate}{1}
+\setlist[mchoice,1]{
+  label=\protect\circled{\arabic*},
+  leftmargin=2em,
+  itemsep=0.3em,
+  parsep=0pt
+}
+
+% 커스텀 명령어
+\newcommand{\ansline}[1]{\underline{\hspace{#1}}}
+\newcommand{\sectionsep}{
+  \vspace{0.8em}
+  \noindent\makebox[\linewidth]{\rule{0.9\linewidth}{0.4pt}}
+  \vspace{0.8em}
+}
+
+% 섹션 타이틀 박스
+\newcommand{\sectionbox}[1]{
+  \vspace{0.5em}
+  \noindent\fbox{\textbf{#1}}
+  \vspace{0.5em}
+}
+
+\setlength{\parindent}{0pt}
+% \setlength{\columnseprule}{0.4pt} % <-- 제거됨
+
+\begin{document}
+
+
+% 시험지 제목 블록
+\begin{center}
+  \Large\textbf{2025학년도 컴퓨터네트워크 중간고사 대비 연습문제지}\\[8pt]
+  \large\textbf{Chapter 2. Application Layer}\\[5pt]
+  \small\textbf{contact: \href{mailto:wrim0923@ewhain.net}{wrim0923@ewhain.net} | github: \href{https://github.com/RainyForest23}{RainyForest23}}\\[5pt]
+  \small\textcolor{gray}{Last updated: \today}
+\end{center}
+
+\vspace{0.5cm}
+
+% 수험 정보
+\begin{tabular}{|m{0.48\textwidth}|m{0.48\textwidth}|}
+\hline
+\textbf{성명:} \hfill & \textbf{학번:} \hfill \\[0.8em]
+\hline
+\end{tabular}
+\vspace{1em}
+
+\noindent
+{\small ※ 각 문항의 정답을 해당란에 정확히 기입하시오. (총 40문항, 100점)}
+
+\vspace{0.5em}
+\noindent\rule{\textwidth}{0.8pt}
+\vspace{0.5em}
+
+
+% 문제 시작
+\begin{enumerate}[itemsep=3em, leftmargin=2em, label={}]
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+% I. 응용 계층의 기본 원리 및 구조
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+\item[] \sectionbox{I. 응용 계층의 기본 원리 및 구조}
+
+\item[\textbf{1.}] \textbf{[TCP vs. UDP]} 다음 중 TCP와 UDP가 제공하는 서비스 모델에 대한 설명으로 \textbf{틀린} 것은?
+
+\begin{mchoice}
+  \item TCP는 신뢰할 수 있는 데이터 전송을 제공하며, UDP는 신뢰성을 보장하지 않는다.
+  \item TCP는 연결 지향형으로 설정이 필요하지만, UDP는 연결 설정이 필요 없다.
+  \item TCP는 흐름 제어와 혼잡 제어를 제공한다.
+  \item UDP는 타이밍, 최소 처리량 보장, 보안 등 어떤 서비스도 제공하지 않지만, TCP는 최소 처리량 보장 기능을 제공한다.
+  \item 실시간 스트리밍과 같은 지연에 민감한 애플리케이션은 종종 UDP를 선호한다.
+\end{mchoice}
+
+\item[\textbf{2.}] \textbf{[프로세스 식별]} 원격 호스트에서 실행되는 프로세스가 메시지를 수신하려면 반드시 식별자가 필요하다. 이 식별자는 호스트의 IP 주소와 무엇으로 구성되는가?
+
+답: \ansline{4cm}
+
+\item[\textbf{3.}] \textbf{[P2P]} P2P 구조는 새로운 피어가 합류할 때 새로운 서비스 수요뿐만 아니라 새로운 서비스 용량도 가져오기 때문에 스스로 확장성을 가진다. (\hspace{1cm})
+
+\item[\textbf{4.}] \textbf{[P2P vs. 클라이언트-서버]} 파일 크기 $F$를 $N$개의 피어에게 분배할 때, P2P 아키텍처가 클라이언트-서버 아키텍처보다 효율적인 주요 이유와 \textbf{가장 거리가 먼} 것은?
+
+
+
+\begin{mchoice}
+
+\item P2P는 서버 외에 모든 피어의 업로드 용량을 활용하여 총 업로드 속도를 높일 수 있다.
+
+\item 클라이언트-서버 방식은 서버가 $N$개의 파일 복사본을 보내야 하므로 분배 시간이 $N$에 비례한다.
+
+\item P2P 방식은 서버 인프라에 대한 상당한 투자가 필요하지 않다.
+
+\item P2P 방식은 피어의 수가 증가할수록 성능이 떨어진다.
+
+\item P2P는 항상 켜져 있는 서버가 필요하지 않다.
+
+\end{mchoice}
+
+
+
+\item[\textbf{5.}] \textbf{[프로토콜 특성]} 서버가 과거 클라이언트 요청에 대한 정보를 유지하지 않는 프로토콜을 무엇이라고 하는가?
+
+
+
+답: \ansline{4cm}
+
+
+
+\item[\textbf{6.}] \textbf{[응용 계층 프로토콜]} 응용 계층 프로토콜이 정의하는 요소가 \textbf{아닌} 것은?
+
+
+
+\begin{mchoice}
+
+\item 교환되는 메시지 유형
+
+\item 메시지 구문(syntax)
+
+\item 메시지 의미론(semantics)
+
+\item 메시지 전송 및 응답 규칙
+
+\item 네트워크 코어 장치가 메시지를 라우팅하는 방법
+
+\end{mchoice}
+
+
+
+\item[\textbf{7.}] \textbf{[애플리케이션 아키텍처]} 다음 중 P2P 구조를 사용하는 예시는?
+
+
+
+\begin{mchoice}
+
+\item HTTP, SMTP
+
+\item DNS, E-mail
+
+\item BitTorrent, Skype
+
+\item Web, File Transfer
+
+\item Streaming video, Text messaging
+
+\end{mchoice}
+
+
+
+
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+% II. 웹 및 HTTP
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+
+\item[] \sectionbox{II. 웹 및 HTTP}
+
+
+
+\item[\textbf{8.}] \textbf{[HTTP 상태]} HTTP는 기본적으로 Stateless 프로토콜이지만, HTTP/2 및 HTTP/3에서는 Stateful 기능이 추가되었다. (\hspace{1cm})
+
+
+
+\item[\textbf{9.}] \textbf{[HTTP 연결]} Non-persistent HTTP 연결에 대한 설명으로 \textbf{옳은} 것은?
+
+
+
+\begin{mchoice}
+
+\item 하나의 TCP 연결로 여러 객체를 전송할 수 있다.
+
+\item 다수의 객체를 다운로드하려면 여러 TCP 연결이 필요하다.
+
+\item 클라이언트가 참조된 객체를 발견하자마자 요청할 수 있다.
+
+\item 모든 참조된 객체에 대해 RTT가 한 번만 소요된다.
+
+\item 서버는 응답 후에도 연결을 열어 둔다.
+
+\end{mchoice}
+
+
+
+\item[\textbf{10.}] \textbf{[응답 시간]} 기본 HTML 파일이 10개의 작은 객체를 참조하고, 모두 동일 서버에 있다고 가정하자. Non-persistent HTTP에서 병렬 연결을 사용하지 않을 때, 모든 객체를 다운로드하는 데 필요한 총 RTT의 최소 횟수는? (DNS 조회 시간 제외)
+
+
+
+답: \ansline{3cm} RTTs
+
+
+
+\item[\textbf{11.}] \textbf{[응답 시간-병렬]} 문제 10과 동일한 상황에서, 브라우저가 10개의 병렬 TCP 연결을 열 때, 총 RTT의 최소 횟수는?
+
+
+
+답: \ansline{3cm} RTTs
+
+
+
+\item[\textbf{12.}] \textbf{[응답 시간-Persistent]} 문제 10과 동일한 상황에서, Persistent HTTP와 파이프라이닝을 사용할 때, 총 RTT의 최소 횟수는?
+
+
+
+답: \ansline{3cm} RTTs
+
+
+
+\item[\textbf{13.}] \textbf{[웹 캐시]} 웹 캐시를 운영했을 때의 이점으로 \textbf{가장 거리가 먼} 것은?
+
+
+
+\begin{mchoice}
+
+\item 클라이언트 요청에 대한 응답 시간을 줄인다.
+
+\item 액세스 링크 트래픽을 줄여 비용을 절감한다.
+
+\item 캐시가 없는 객체의 경우에도 지연이 줄어든다.
+
+\item LAN 내부 트래픽이 줄어든다.
+
+\item Conditional GET으로 전송 지연을 줄일 수 있다.
+
+\end{mchoice}
+
+
+
+\item[\textbf{14.}] \textbf{[HTTP 상태 코드]} Conditional GET 요청 시, 캐시된 사본이 최신 상태여서 서버가 객체를 전송하지 않을 때 응답하는 HTTP 상태 코드는?
+
+
+
+답: \ansline{4cm}
+
+
+
+\item[\textbf{15.}] \textbf{[HTTP 헤더]} 클라이언트가 이미 요청한 파일의 사본을 가지고 있는지 서버에게 알려주는 헤더는?
+
+
+
+\begin{mchoice}
+
+\item \texttt{User-Agent:}
+
+\item \texttt{Accept-Language:}
+
+\item \texttt{If-Modified-Since:}
+
+\item \texttt{Connection:}
+
+\item \texttt{Host:}
+
+\end{mchoice}
+
+
+
+\item[\textbf{16.}] \textbf{[HTTP/2]} HTTP/2는 객체를 프레임으로 나누어 전송 순서를 섞음으로써 HOL Blocking 문제를 완화한다. (\hspace{1cm})
+
+
+
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+% III. 전자 메일
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+
+\item[] \sectionbox{III. 전자 메일 (E-mail)}
+
+
+
+\item[\textbf{17.}] \textbf{[SMTP vs. HTTP]} SMTP와 HTTP는 모두 TCP를 사용하지만, SMTP는 데이터를 밀어 넣는(push) 프로토콜이고, HTTP는 당겨오는(pull) 프로토콜이다. (\hspace{1cm})
+
+
+
+\item[\textbf{18.}] \textbf{[SMTP 특성]} SMTP의 특징으로 \textbf{옳지 않은} 것은?
+
+
+
+\begin{mchoice}
+
+\item 기본적으로 TCP 포트 25를 사용한다.
+
+\item 전송 서버에서 수신 서버로 직접 메일을 전송한다.
+
+\item 메시지는 반드시 7비트 ASCII로 표현되어야 한다.
+
+\item 영구적 TCP 연결을 사용한다.
+
+\item 하나의 메시지에 여러 객체를 담을 수 없으며, 각 객체는 별도로 전송되어야 한다.
+
+\end{mchoice}
+
+
+
+\item[\textbf{19.}] \textbf{[이메일 프로토콜]} Bob이 메일 서버의 받은 편지함에서 메일을 가져와 읽을 때 사용할 수 있는 프로토콜은?
+
+
+
+\begin{mchoice}
+
+\item SMTP
+
+\item HTTP (웹 기반이 아닌 경우)
+
+\item IMAP
+
+\item a와 c 모두
+
+\item b와 c 모두
+
+\end{mchoice}
+
+
+
+\item[\textbf{20.}] \textbf{[이메일 전송]} Alice의 사용자 에이전트가 Bob의 메일 서버와 직접 통신하지 않고, Alice의 메일 서버를 경유하도록 설계된 이유로 \textbf{가장 적절한} 것은?
+
+
+
+\begin{mchoice}
+
+\item Alice의 UA가 TCP 연결에 실패할 경우 메일 서버가 재시도할 수 있다.
+
+\item Alice의 메일 서버가 DNS resolution을 대신 처리한다.
+
+\item Alice의 메일 서버가 여러 사용자의 메일을 동시에 효율적으로 전송할 수 있다.
+
+\item 위의 모두
+
+\end{mchoice}
+
+
+
+\item[\textbf{21.}] \textbf{[SMTP 상태]} SMTP는 핸드셰이킹, 메시지 전송, 종료의 세 단계를 거치므로 stateful 프로토콜이다. (\hspace{1cm})
+
+
+
+
+
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+% IV. DNS
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+
+\item[] \sectionbox{IV. DNS}
+
+
+
+\item[\textbf{22.}] \textbf{[DNS 계층]} DNS는 핵심 인터넷 기능이지만, 네트워크 코어가 아닌 최종 시스템에서 실행되는 응용 계층 프로토콜이다. (\hspace{1cm})
+
+
+
+\item[\textbf{23.}] \textbf{[DNS 서비스]} DNS가 제공하는 주요 서비스가 \textbf{아닌} 것은?
+
+
+
+\begin{mchoice}
+
+\item 호스트 이름-IP 주소 변환
+
+\item 호스트 별명을 정식 이름으로 변환
+
+\item 메일 서버 별명
+
+\item 신뢰할 수 있는 데이터 전송
+
+\item 부하 분산
+
+\end{mchoice}
+
+
+
+\item[\textbf{24.}] \textbf{[DNS 쿼리]} DNS 쿼리 요청을 받은 서버가 다른 DNS 서버에게 추가 쿼리를 발행하고 최종 결과를 클라이언트에게 응답하는 방식은?
+
+
+
+\begin{mchoice}
+
+\item 캐싱 쿼리
+
+\item 반복 쿼리
+
+\item 재귀 쿼리
+
+\item 권한 쿼리
+
+\end{mchoice}
+
+
+
+\item[\textbf{25.}] \textbf{[DNS 오버헤드]} 재귀적 쿼리가 반복적 쿼리보다 상위 계층 DNS 서버에 더 큰 오버헤드를 부과하는 이유는?
+
+
+
+\begin{mchoice}
+
+\item 클라이언트가 여러 서버에 개별적으로 쿼리를 보내야 하므로
+
+\item 상위 서버가 더 넓은 지역의 LDNS를 대상으로 더 많은 쿼리를 처리해야 하므로
+
+\item 재귀적 쿼리는 항상 캐싱을 무시하므로
+
+\item 재귀적 쿼리는 DNS 영역 전송 시에만 사용되므로
+
+\end{mchoice}
+
+
+
+\item[\textbf{26.}] \textbf{[LDNS]} 로컬 DNS 서버는 DNS 계층 구조에 엄격하게 속하지 않지만, 캐시를 보유하고 프록시 역할을 수행하여 DNS resolution 속도를 향상시킬 수 있다. (\hspace{1cm})
+
+
+
+\item[\textbf{27.}] \textbf{[DNS 레코드]} 별칭이 어떤 정식 이름의 별명인지 알려주는 DNS 레코드 유형은?
+
+
+
+\begin{mchoice}
+
+\item A 레코드
+
+\item NS 레코드
+
+\item CNAME 레코드
+
+\item MX 레코드
+
+\end{mchoice}
+
+
+
+
+
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+% V. 비디오 스트리밍, CDN 및 소켓 프로그래밍
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+
+\item[] \sectionbox{V. 비디오 스트리밍, CDN 및 소켓}
+
+
+
+\item[\textbf{28.}] \textbf{[CDN]} CDN 서버 클러스터를 많은 액세스 네트워크 깊숙이 배치하여 지연을 줄이는 방식은?
+
+
+
+\begin{mchoice}
+
+\item Bring Home
+
+\item Enter Deep
+
+\item Mega Server
+
+\item Cloud Deployment
+
+\end{mchoice}
+
+
+
+\item[\textbf{29.}] \textbf{[DASH]} DASH 프로토콜에 대한 설명으로 \textbf{틀린} 것은?
+
+
+
+\begin{mchoice}
+
+\item 서버는 비디오를 여러 청크로 나누고, 각 청크를 다양한 비트레이트로 저장한다.
+
+\item 매니페스트 파일은 청크에 대한 URL 정보를 제공한다.
+
+\item 클라이언트는 주기적으로 대역폭을 측정하여 최대 코딩 속도를 선택한다.
+
+\item TCP 연결을 맺고 있는 DASH 서버는 항상 동일하다.
+
+\item 비디오 스트리밍의 지능이 주로 클라이언트 측에 있다.
+
+\end{mchoice}
+
+
+
+\item[\textbf{30.}] \textbf{[TCP 소켓]} TCP 서버가 N개의 클라이언트와 동시에 연결을 지원할 때, 서버가 필요로 하는 최소 소켓 개수는?
+
+
+
+답: \ansline{3cm} 개
+
+
+
+\item[\textbf{31.}] \textbf{[UDP 소켓]} UDP 서버가 N개의 클라이언트로부터 동시에 데이터그램을 수신할 때, 서버가 필요로 하는 최소 소켓 개수는?
+
+
+
+답: \ansline{3cm} 개
+
+
+
+\item[\textbf{32.}] \textbf{[소켓-TCP]} TCP를 사용하는 클라이언트-서버 애플리케이션의 경우, 서버 프로그램은 클라이언트 프로그램보다 먼저 실행되어야 한다. (\hspace{1cm})
+
+
+
+\item[\textbf{33.}] \textbf{[소켓-UDP]} UDP를 사용하는 클라이언트-서버 애플리케이션의 경우, 클라이언트 프로그램은 서버 프로그램보다 먼저 실행될 수 있다. (\hspace{1cm})
+
+
+
+\item[\textbf{34.}] \textbf{[웹 캐시 계산]} 기관 네트워크에서 평균 객체 크기가 900,000비트이고, 외부 서버로의 평균 요청률이 초당 15회이다. 히트율 0.4인 웹 캐시를 설치하면, 액세스 링크 외부로 나가는 요청률 $\beta'$는 초당 몇 회로 감소하는가?
+
+
+
+답: \ansline{3cm} request/sec
+
+
+
+\item[\textbf{35.}] \textbf{[캐시 지연]} 문제 34의 상황에서, 히트율 0.4인 웹 캐시 설치 후의 평균 액세스 지연(캐시 미스 시)을 계산하시오. (소수점 셋째 자리)
+
+
+
+답: \ansline{3cm} seconds
+
+
+
+\item[\textbf{36.}] \textbf{[총 응답 시간]} 문제 34의 상황에서, 캐시 설치 후의 총 평균 응답 시간은? (외부 인터넷 지연 2초, LAN 지연 무시, 소수점 셋째 자리)
+
+
+
+답: \ansline{3cm} seconds
+
+
+
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+% VI. 종합 및 비교
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+
+\item[] \sectionbox{VI. 종합 및 비교}
+
+
+
+\item[\textbf{37.}] \textbf{[TCP 연결]} 두 호스트 사이에 TCP 연결을 설정한다는 의미는 경유하는 중간 라우터에 양쪽 TCP 정보를 기록한다는 뜻이다. (\hspace{1cm})
+
+
+
+\item[\textbf{38.}] \textbf{[데이터 인코딩]} SMTP는 이메일 메시지 본문을 7-bit ASCII로 표현해야 하므로, 바이너리 데이터를 첨부하기 위해서는 전송 전에 \ansline{4cm} 과정을 거쳐야 한다.
+
+
+
+\item[\textbf{39.}] \textbf{[클라이언트-서버]} 클라이언트-서버 구조에서 서버는 영구적인 IP 주소와 잘 알려진 포트 번호를 가져야 하지만, 클라이언트는 유동적인 IP 주소를 가져도 무방하다. (\hspace{1cm})
+
+\item[\textbf{40.}] \textbf{[DNS-HTTP 연동]} Alice가 www.nu.com을 처음 방문하기 위한 과정을 시간 순서대로 나열하시오.
+
+\begin{enumerate}[label=\arabic*., itemsep=0.3em, leftmargin=1.5em, parsep=0pt]
+  \item .com TLD 서버는 NU의 authoritative DNS 서버 정보를 Alice의 LDNS에게 보낸다.
+  \item NU의 authoritative DNS 서버가 www.nu.com의 IP주소를 Alice의 LDNS에게 보낸다.
+  \item Alice의 호스트가 www.nu.com의 IPv4 주소를 묻는 DNS query를 LDNS에게 보낸다.
+  \item Alice의 LDNS가 NU의 authoritative DNS 서버에게 DNS query를 보낸다.
+  \item Alice의 browser가 웹 서버로 TCP 연결을 맺고 HTTP request를 전송한다.
+  \item Alice의 LDNS가 (www.nu.com, 21.21.21.4, A)를 포함한 DNS reply를 Alice에게 전달한다.
+  \item Alice의 LDNS는 DNS query를 .com TLD DNS 서버에게 보낸다.
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent
+답: 3 → \ansline{0.8cm} → \ansline{0.8cm} → \ansline{0.8cm} → \ansline{0.8cm} → \ansline{0.8cm} → \ansline{0.8cm}
+
+
+\end{enumerate}
+
+
+\vfill
+
+\begin{center}
+  \rule{0.9\textwidth}{0.4pt}\\[8pt]
+  {\small\textbf{--- 수고하셨습니다 ---}}\\[6pt]
+  {\scriptsize ※ 본 문제지는 학습 목적으로 제작되었습니다.}
+\end{center}
+
+\end{document}

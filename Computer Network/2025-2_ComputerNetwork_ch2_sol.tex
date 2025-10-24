@@ -1,0 +1,318 @@
+\documentclass[a4paper, 10pt]{article}
+
+% pdfLaTeX용 한글 패키지
+\usepackage{kotex}
+
+% 기본 패키지
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{hyperref}
+
+% 페이지 여백 설정
+\geometry{
+  top=2.5cm, 
+  bottom=2.5cm, 
+  left=2cm, 
+  right=2cm,
+  headheight=20pt
+}
+
+% 머리글 및 바닥글 설정 (해설지용으로 수정)
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\lhead{\small 2025학년도 중간고사 대비 연습문제}
+\chead{\small\textbf{컴퓨터 네트워크 - 정답 및 해설}}
+\rhead{\small\thepage}
+\cfoot{\scriptsize ※ 본 해설지는 학습 목적으로 제작되었습니다.}
+
+% 원형 숫자
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+  \node[shape=circle,draw,inner sep=0.7pt,minimum size=0.7em,line width=0.5pt] (char) {\small #1};}}
+
+% 객관식 문항 스타일
+\newlist{mchoice}{enumerate}{1}
+\setlist[mchoice,1]{
+  label=\protect\circled{\arabic*},
+  leftmargin=2em,
+  itemsep=0.3em,
+  parsep=0pt
+}
+
+% 커스텀 명령어
+\newcommand{\ansline}[1]{\underline{\hspace{#1}}}
+\newcommand{\sectionbox}[1]{
+  \vspace{0.5em}
+  \noindent\fbox{\textbf{#1}}
+  \vspace{0.5em}
+}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+% 시험지 제목 블록
+\begin{center}
+  \Large\textbf{2025학년도 컴퓨터네트워크 midterm 대비 연습문제 정답 및 해설}\\[8pt]
+  \large\textbf{Chapter 2. Application Layer}\\[5pt]
+  \small\textbf{contact: \href{mailto:wrim0923@ewhain.net}{wrim0923@ewhain.net} | github: \href{https://github.com/RainyForest23}{RainyForest23}}\\[5pt]
+  \small\textcolor{gray}{Last updated: \today}
+\end{center}
+
+\vspace{1cm}
+
+% --- 빠른 정답 ---
+\section*{빠른 정답}
+\noindent\rule{\textwidth}{0.6pt}
+\begin{center}
+\renewcommand{\arraystretch}{1.4} % 표의 줄 간격 조절
+\begin{tabular}{*{8}{p{0.1\textwidth}}}
+\toprule
+\textbf{1.} \circled{4} & \textbf{2.} 포트 번호 & \textbf{3.} O & \textbf{4.} \circled{4} & \textbf{5.} Stateless & \textbf{6.} \circled{5} & \textbf{7.} \circled{3} & \textbf{8.} X \\
+\textbf{9.} \circled{2} & \textbf{10.} 22 RTTs & \textbf{11.} 4 RTTs & \textbf{12.} 3 RTTs & \textbf{13.} \circled{4} & \textbf{14.} 304 & \textbf{15.} \circled{3} & \textbf{16.} O \\
+\textbf{17.} O & \textbf{18.} \circled{4} & \textbf{19.} \circled{3} & \textbf{20.} \circled{1} & \textbf{21.} O & \textbf{22.} O & \textbf{23.} \circled{4} & \textbf{24.} \circled{3} \\
+\textbf{25.} \circled{2} & \textbf{26.} O & \textbf{27.} \circled{3} & \textbf{28.} \circled{2} & \textbf{29.} \circled{4} & \textbf{30.} N+1 & \textbf{31.} 1 & \textbf{32.} O \\
+\textbf{33.} X & \textbf{34.} 9 req/s & \textbf{35.} (풀이참조) & \textbf{36.} (풀이참조) & \textbf{37.} X & \textbf{38.} Base64 & \textbf{39.} O & \textbf{40.} (아래참조) \\
+\bottomrule
+\end{tabular}
+\end{center}
+\vspace{0.5cm}
+\noindent\textbf{40번 정답:} 3 → 7 → 1 → 4 → 2 → 6 → 5
+
+\newpage
+
+% --- 상세 해설 ---
+\section*{상세 해설}
+\noindent\rule{\textwidth}{0.8pt}
+
+\begin{enumerate}[itemsep=2.5em, leftmargin=2em, label={}]
+
+\item[] \sectionbox{I. 응용 계층의 기본 원리 및 구조}
+
+\item[\textbf{1.}] \textbf{[TCP vs. UDP]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{4}} \par
+\small\textbf{해설:} TCP는 신뢰성 있는 전송, 흐름 제어, 혼잡 제어는 제공하지만, UDP와 마찬가지로 최소 처리량(throughput)이나 타이밍(timing)에 대한 보장은 제공하지 않습니다.
+
+\item[\textbf{2.}] \textbf{[프로세스 식별]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: 포트 번호 (Port Number)} \par
+\small\textbf{해설:} IP 주소는 호스트(컴퓨터)를 식별하고, 포트 번호는 해당 호스트 내에서 실행되는 특정 프로세스(애플리케이션)를 식별합니다. 이 둘의 조합을 '소켓 주소'라고 합니다.
+
+\item[\textbf{3.}] \textbf{[P2P]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: O} \par
+\small\textbf{해설:} P2P의 가장 큰 특징 중 하나는 '자체 확장성(self-scalability)'입니다. 각 피어가 다운로더인 동시에 업로더 역할을 하므로, 사용자가 늘어날수록 시스템 전체의 용량도 함께 증가합니다.
+
+\item[\textbf{4.}] \textbf{[P2P vs. 클라이언트-서버]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{4}} \par
+\small\textbf{해설:} P2P 아키텍처는 피어의 수가 증가할수록 전체 업로드 용량이 커져 성능이 오히려 향상됩니다. 성능이 떨어진다는 설명은 클라이언트-서버 모델에 더 가깝습니다.
+
+\item[\textbf{5.}] \textbf{[프로토콜 특성]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: Stateless (무상태) 프로토콜} \par
+\small\textbf{해설:} 서버가 클라이언트의 이전 요청 정보를 저장하지 않는 프로토콜을 Stateless 프로토콜이라고 합니다. HTTP가 대표적인 예입니다.
+
+\item[\textbf{6.}] \textbf{[응용 계층 프로토콜]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{5}} \par
+\small\textbf{해설:} 네트워크 코어 장치(라우터)가 메시지를 라우팅하는 방법은 네트워크 계층(Network Layer)에서 정의하는 역할입니다. 응용 계층은 종단 시스템 간의 통신 규칙에만 관여합니다.
+
+\item[\textbf{7.}] \textbf{[애플리케이션 아키텍처]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{3}} \par
+\small\textbf{해설:} BitTorrent와 초기 Skype는 대표적인 P2P(Peer-to-Peer) 아키텍처를 사용합니다. 나머지는 모두 클라이언트-서버 구조를 기반으로 합니다.
+
+\item[] \sectionbox{II. 웹 및 HTTP}
+
+\item[\textbf{8.}] \textbf{[HTTP 상태]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: X} \par
+\small\textbf{해설:} HTTP는 근본적으로 Stateless 프로토콜입니다. 웹 사이트가 로그인 상태 등을 유지하는 것은 HTTP 자체 기능이 아닌 쿠키(cookie)나 세션(session)과 같은 별도의 기술을 사용하기 때문입니다.
+
+\item[\textbf{9.}] \textbf{[HTTP 연결]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{2}} \par
+\small\textbf{해설:} 비-지속(Non-persistent) HTTP는 하나의 객체를 요청하고 응답받을 때마다 새로운 TCP 연결을 맺고 끊습니다. 따라서 10개의 객체를 받으려면 10개의 TCP 연결이 필요합니다.
+
+\item[\textbf{10.}] \textbf{[응답 시간]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: 22 RTTs} \par
+\small\textbf{해설:} (1) 기본 HTML 파일을 위한 TCP 연결(1 RTT) + 파일 요청/수신(1 RTT) = 2 RTTs. (2) 10개의 참조 객체 각각에 대해 TCP 연결(1 RTT) + 객체 요청/수신(1 RTT)이 필요하므로 10 * 2 = 20 RTTs. 총 2 + 20 = 22 RTTs가 필요합니다.
+
+\item[\textbf{11.}] \textbf{[응답 시간-병렬]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: 4 RTTs} \par
+\small\textbf{해설:} (1) 기본 HTML 파일을 위한 2 RTTs는 동일합니다. (2) 이후 10개의 TCP 연결을 병렬로 동시에 시작하므로 연결 설정에 1 RTT가 걸리고, 10개의 객체를 병렬로 동시에 요청하고 수신하는 데 1 RTT가 걸립니다. 총 2 + 1 + 1 = 4 RTTs가 필요합니다.
+
+\item[\textbf{12.}] \textbf{[응답 시간-Persistent]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: 3 RTTs} \par
+\small\textbf{해설:} (1) 최초 TCP 연결 설정에 1 RTT. (2) 기본 HTML 파일 요청/수신에 1 RTT. (3) 지속적 연결 상태에서 파이프라이닝을 사용하면 10개의 객체 요청을 한 번에 보내고 응답을 연속적으로 받으므로 1 RTT가 소요됩니다. 총 1 + 1 + 1 = 3 RTTs가 필요합니다.
+
+\item[\textbf{13.}] \textbf{[웹 캐시]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{4}} \par
+\small\textbf{해설:} 웹 캐시(프록시 서버)는 기관의 네트워크와 외부 인터넷 사이에 위치하여 외부로 나가는 트래픽(액세스 링크 트래픽)을 줄이는 것이 주목적입니다. 기관 내부의 LAN 트래픽 감소와는 직접적인 관련이 적습니다.
+
+\item[\textbf{14.}] \textbf{[HTTP 상태 코드]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: 304 Not Modified} \par
+\small\textbf{해설:} 클라이언트가 Conditional GET 요청을 보냈을 때, 서버가 클라이언트가 가진 캐시된 버전이 최신이라고 판단하면 객체 본문 없이 '304 Not Modified' 상태 코드만 응답합니다.
+
+\item[\textbf{15.}] \textbf{[HTTP 헤더]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{3}} \par
+\small\textbf{해설:} `If-Modified-Since:` 헤더는 클라이언트가 특정 날짜 이후에 파일이 수정되었을 경우에만 파일을 보내달라고 서버에 요청할 때 사용됩니다. 이것이 Conditional GET의 핵심입니다.
+
+\item[\textbf{16.}] \textbf{[HTTP/2]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: O} \par
+\small\textbf{해설:} HTTP/1.1의 HOL(Head-of-Line) Blocking은 하나의 요청이 지연되면 뒤따르는 모든 요청이 대기하는 문제입니다. HTTP/2는 요청을 여러 스트림으로 나누고 객체를 프레임 단위로 쪼개어 인터리빙(interleaving) 전송하므로 이 문제를 해결합니다. (단, TCP 계층의 HOL Blocking은 여전히 존재)
+
+\item[] \sectionbox{III. 전자 메일 (E-mail)}
+
+\item[\textbf{17.}] \textbf{[SMTP vs. HTTP]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: O} \par
+\small\textbf{해설:} SMTP는 클라이언트(송신자)가 서버로 메일을 밀어 넣는(push) 방식으로 동작합니다. 반면 HTTP는 클라이언트(브라우저)가 서버로부터 웹 페이지를 당겨오는(pull) 방식으로 동작합니다.
+
+\item[\textbf{18.}] \textbf{[SMTP 특성]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{4}} \par
+\small\textbf{해설:} SMTP는 일반적으로 각 메일 전송 트랜잭션마다 새로운 TCP 연결을 맺고 종료하는 비-지속(non-persistent) 연결을 사용합니다. 영구적(permanent) 연결을 사용한다는 설명은 옳지 않습니다.
+
+\item[\textbf{19.}] \textbf{[이메일 프로토콜]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{3}} \par
+\small\textbf{해설:} 메일을 서버에서 클라이언트로 '가져올 때' 사용하는 프로토콜은 POP3나 IMAP입니다. SMTP는 메일을 '보낼 때' 사용합니다.
+
+\item[\textbf{20.}] \textbf{[이메일 전송]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{1}} \par
+\small\textbf{해설:} 가장 중요한 이유는 신뢰성입니다. 수신자(Bob)의 메일 서버가 일시적으로 다운되었을 경우, 송신자(Alice)의 메일 서버는 메일을 큐에 저장해두고 주기적으로 재전송을 시도할 수 있습니다.
+
+\item[\textbf{21.}] \textbf{[SMTP 상태]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: O} \par
+\small\textbf{해설:} SMTP는 연결 설정(handshaking), 메시지 전송, 연결 종료의 명확한 단계를 거치며, 각 단계에서 클라이언트와 서버는 특정 상태를 유지해야 합니다. 따라서 Stateful 프로토콜이 맞습니다.
+
+\item[] \sectionbox{IV. DNS}
+
+\item[\textbf{22.}] \textbf{[DNS 계층]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: O} \par
+\small\textbf{해설:} DNS는 인터넷의 핵심 기능이지만 라우터 같은 네트워크 코어에서 동작하지 않습니다. DNS 서버라는 종단 시스템에서 실행되는 응용 계층 프로토콜입니다.
+
+\item[\textbf{23.}] \textbf{[DNS 서비스]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{4}} \par
+\small\textbf{해설:} DNS는 주로 UDP를 사용하여 신뢰성을 보장하지 않습니다. 신뢰성 있는 데이터 전송은 TCP의 역할입니다. (단, 대량의 정보를 교환하는 Zone Transfer 시에는 TCP를 사용하기도 합니다.)
+
+\item[\textbf{24.}] \textbf{[DNS 쿼리]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{3} 재귀 쿼리 (Recursive Query)} \par
+\small\textbf{해설:} 재귀 쿼리는 클라이언트의 요청을 받은 DNS 서버가 대신 다른 서버들에게 연쇄적으로 질의하여 최종 결과를 얻어다 주는 방식입니다. 반면, 반복 쿼리(Iterative Query)는 서버가 '다음으로 물어볼 곳'을 알려주면 클라이언트가 직접 다시 질의하는 방식입니다.
+
+\item[\textbf{25.}] \textbf{[DNS 오버헤드]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{2}} \par
+\small\textbf{해설:} 재귀 쿼리를 처리하는 상위 서버(예: Root, TLD 서버)는 질의를 시작한 LDNS에 대한 상태를 계속 유지해야 하며, 하위 서버로부터 응답이 올 때까지 기다려야 합니다. 이는 더 많은 자원을 소모하게 만듭니다.
+
+\item[\textbf{26.}] \textbf{[LDNS]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: O} \par
+\small\textbf{해설:} 로컬 DNS 서버는 ISP나 기관 네트워크 내에 존재하며, DNS 계층 구조의 정식 구성원은 아니지만, 사용자들의 DNS 쿼리를 대신 처리하고 결과를 캐싱하여 응답 속도를 높이는 중요한 역할을 합니다.
+
+\item[\textbf{27.}] \textbf{[DNS 레코드]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{3} CNAME 레코드} \par
+\small\textbf{해설:} CNAME(Canonical Name) 레코드는 특정 호스트 이름이 다른 정식 이름(Canonical Name)의 별명(alias)임을 명시합니다. A 레코드는 호스트 이름을 IP 주소로 매핑합니다.
+
+\item[] \sectionbox{V. 비디오 스트리밍, CDN 및 소켓}
+
+\item[\textbf{28.}] \textbf{[CDN]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{2} Enter Deep} \par
+\small\textbf{해설:} CDN 제공 업체인 Akamai가 사용하는 전략으로, 전 세계 수많은 ISP 네트워크 깊숙이 소규모 서버 클러스터를 분산 배치하여 사용자와의 물리적 거리를 최소화하고 지연을 줄이는 방식입니다.
+
+\item[\textbf{29.}] \textbf{[DASH]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: \circled{4}} \par
+\small\textbf{해설:} DASH(Dynamic Adaptive Streaming over HTTP)에서 클라이언트는 네트워크 상태에 따라 가장 적합한 비트레이트의 청크를 서로 다른 CDN 서버로부터 가져올 수 있습니다. 항상 동일한 서버에 연결을 유지하는 것은 아닙니다.
+
+\item[\textbf{30.}] \textbf{[TCP 소켓]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: N+1 개} \par
+\small\textbf{해설:} TCP 서버는 (1) 새로운 클라이언트의 연결 요청을 받기 위한 '리스닝 소켓(listening socket)' 1개가 항상 필요하며, (2) 각 클라이언트와 실제 데이터 통신을 위한 '연결 소켓(connection socket)'이 클라이언트 수(N개)만큼 필요합니다. 따라서 총 N+1개의 소켓이 필요합니다.
+
+\item[\textbf{31.}] \textbf{[UDP 소켓]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: 1 개} \par
+\small\textbf{해설:} UDP는 비연결형 프로토콜이므로, 하나의 소켓만으로 여러 클라이언트로부터 오는 데이터그램을 모두 수신할 수 있습니다. 운영체제가 데이터그램에 포함된 발신지 IP와 포트 번호를 보고 어떤 클라이언트로부터 왔는지 구분합니다.
+
+\item[\textbf{32.}] \textbf{[소켓-TCP]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: O} \par
+\small\textbf{해설:} TCP는 연결 지향형이므로, 클라이언트가 연결을 요청하기 전에 서버가 반드시 먼저 실행되어 특정 포트에서 요청을 기다리고(listen) 있어야 합니다.
+
+\item[\textbf{33.}] \textbf{[소켓-UDP]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: X} \par
+\small\textbf{해설:} 클라이언트 프로그램이 먼저 실행되어 서버로 데이터그램을 보낼 수는 있지만, 서버 프로그램이 실행되어 있지 않으면 해당 데이터그램은 그냥 버려지고 통신이 이루어지지 않습니다. 성공적인 통신을 위해서는 서버가 먼저 실행되어야 합니다.
+
+\item[\textbf{34-36.}] \textbf{[계산 문제 풀이]} \par
+\small\textbf{해설:} 이 문제들을 풀기 위해서는 기관의 '액세스 링크 대역폭'이 필요하지만 주어지지 않았습니다. 일반적인 교재의 예제처럼 \textbf{15 Mbps}라고 가정하고 풀겠습니다.
+\begin{itemize}
+    \item \textbf{34번 정답: 9 request/sec} \\ 히트율이 0.4이므로, 캐시에서 처리하지 못하고 외부로 나가는 요청(miss rate)은 1 - 0.4 = 0.6입니다. 따라서 외부 요청률은 15 req/sec * 0.6 = 9 req/sec 입니다.
+    \item \textbf{35번 정답: 0.130 seconds} \\ 캐시 미스 시 액세스 링크의 지연은 (전송 지연 + 큐잉 지연)입니다.
+    \begin{itemize}
+        \item 트래픽 강도($\alpha$) = (초당 요청 수 * 객체 크기) / 링크 대역폭 \\ = (9 req/s * 900,000 bits) / 15,000,000 bps = 0.54
+        \item 전송 지연 = 객체 크기 / 대역폭 = 900,000 / 15,000,000 = 0.06 sec
+        \item 큐잉 지연 (간단한 모델) $\approx$ (전송 지연 * $\alpha$) / (1 - $\alpha$) = (0.06 * 0.54) / (1 - 0.54) $\approx$ 0.070 sec
+        \item 총 액세스 지연 = 0.06 + 0.070 = 0.130 sec
+    \end{itemize}
+    \item \textbf{36번 정답: 1.278 seconds} \\ 총 평균 응답 시간 = (히트율 * 캐시 응답 시간) + (미스율 * 외부 응답 시간). 캐시 응답 시간은 LAN 지연이므로 무시(0). 외부 응답 시간 = 인터넷 지연 + 액세스 링크 지연.
+    \\ = (0.4 * 0) + (0.6 * (2 sec + 0.130 sec)) = 0.6 * 2.130 = 1.278 sec.
+\end{itemize}
+
+\item[] \sectionbox{VI. 종합 및 비교}
+
+\item[\textbf{37.}] \textbf{[TCP 연결]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: X} \par
+\small\textbf{해설:} TCP 연결 상태(sequence number, window size 등)는 양쪽 종단 시스템(end system)의 운영체제에서만 관리됩니다. 중간의 라우터들은 TCP 연결에 대해 알지 못하며, 단순히 패킷을 목적지 주소에 따라 전달할 뿐입니다.
+
+\item[\textbf{38.}] \textbf{[데이터 인코딩]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: Base64 인코딩} \par
+\small\textbf{해설:} 이메일은 7비트 ASCII 문자만 전송할 수 있으므로, 이미지나 실행 파일 같은 8비트 바이너리 데이터는 전송 전에 텍스트 형태로 변환해야 합니다. 이때 사용되는 표준 인코딩 방식이 Base64입니다. (MIME 표준의 일부)
+
+\item[\textbf{39.}] \textbf{[클라이언트-서버]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: O} \par
+\small\textbf{해설:} 서버는 클라이언트들이 항상 찾아올 수 있도록 고정된(영구적인) IP 주소를 가져야 합니다. 반면 클라이언트는 서버에 접속할 때만 IP 주소가 필요하므로 유동 IP를 사용해도 문제가 없습니다.
+
+\item[\textbf{40.}] \textbf{[DNS-HTTP 연동]} ...
+\vspace{0.5em}
+\noindent\textbf{정답: 3 → 7 → 1 → 4 → 2 → 6 → 5} \par
+\small\textbf{해설:} DNS 조회는 계층적으로 이루어집니다. 1) 클라이언트가 로컬 DNS(LDNS)에 질의하고(3), 2) LDNS가 Root 서버를 거쳐 TLD(.com) 서버에 질의합니다(7). 3) TLD 서버가 Authoritative 서버 정보를 알려주고(1), 4) LDNS는 그 정보를 바탕으로 Authoritative 서버에 다시 질의합니다(4). 5) 최종 IP 주소를 응답받고(2), 6) LDNS는 이 IP를 클라이언트에게 전달합니다(6). 7) IP 주소를 받은 클라이언트는 비로소 해당 IP로 HTTP 요청을 보냅니다(5).
+
+\end{enumerate}
+
+\vfill
+\begin{center}
+  \rule{0.9\textwidth}{0.4pt}\\[8pt]
+  {\small\textbf{--- 수고하셨습니다 ---}}\\[6pt]
+\end{center}
+
+\end{document}
