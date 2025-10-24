@@ -1,203 +1,463 @@
-요청하신 연습문제 38문항에 대한 상세한 해설을 제시된 강의자료와 연습문제 내용을 바탕으로 작성했습니다. 각 답변 뒤에는 해당 내용을 지지하는 출처 번호가 표시되어 있습니다.
+\documentclass[a4paper, 10pt]{article}
 
----
+% pdfLaTeX용 한글 패키지
+\usepackage{kotex}
 
-## 컴퓨터 네트워크 Midterm Exam 대비 연습문제 해설
+% 기본 패키지
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue]{hyperref}
 
-### I. 용어 및 기본 개념 해설
+% 페이지 여백 설정
+\geometry{
+  top=2.5cm,
+  bottom=2.5cm,
+  left=2cm,
+  right=2cm,
+  headheight=20pt
+}
 
-1.  **Transport Layer의 주요 목표 5가지:**
-    *   **Multiplexing** (다중화) 및 **Demultiplexing** (역다중화).
-    *   **Reliable Data Transfer (rdt)** (신뢰할 수 있는 데이터 전송).
-    *   **Flow Control** (흐름 제어).
-    *   **Congestion Control** (혼잡 제어).
-    *   **End-to-end (e2e) error detection** (종단 간 오류 감지).
+% 머리글 및 바닥글 설정 (해설지용으로 수정)
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\lhead{\small 2025학년도 중간고사 대비 연습문제}
+\chead{\small\textbf{컴퓨터 네트워크 - 정답 및 해설}}
+\rhead{\small\thepage}
+\cfoot{\scriptsize ※ 본 해설지는 학습 목적으로 제작되었습니다.}
 
-2.  **Transport Layer와 Network Layer의 주요 기능 차이점:**
-    *   **Transport Layer**는 **프로세스** 간의 논리적 통신 (logical communication between processes)을 제공합니다.
-    *   **Network Layer (IP)**는 **호스트** (Host, 즉 종단 시스템) 간의 논리적 통신을 제공합니다.
+% 원형 숫자
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+  \node[shape=circle,draw,inner sep=0.7pt,minimum size=0.7em,line width=0.5pt] (char) {\small #1};}}
 
-3.  **TCP와 UDP의 비교:**
-    *   **TCP (Transmission Control Protocol):** **연결 지향(Connection-oriented)** 프로토콜이며, **신뢰성(Reliable)** 있고, 순서대로(in-order) 데이터를 전달하며, 혼잡 제어(congestion control)와 흐름 제어(flow control) 기능을 제공합니다.
-    *   **UDP (User Datagram Protocol):** **비연결(Connectionless)** 프로토콜이며, **비신뢰성(Unreliable)** 있고, 순서에 상관없이(unordered) 데이터를 전달합니다. "최선형(best-effort)" IP의 확장이며, 흐름 제어나 혼잡 제어를 제공하지 않습니다.
+% 객관식 문항 스타일
+\newlist{mchoice}{enumerate}{1}
+\setlist[mchoice,1]{
+  label=\protect\circled{\arabic*},
+  leftmargin=2em,
+  itemsep=0.3em,
+  parsep=0pt
+}
 
-4.  **TCP 송수신 과정:**
-    *   **송신자(Sender):** 애플리케이션 계층 메시지를 여러 개의 **세그먼트(segments)**로 나누어 Transport Header를 추가한 후 IP 계층(Network Layer)으로 전달합니다.
-    *   **수신자(Receiver):** IP 계층으로부터 세그먼트를 수신하고, 헤더 값을 확인하여 세그먼트들을 **재조립(reassembles)**하여 메시지를 애플리케이션 계층으로 전달합니다.
+% 커스텀 명령어
+\newcommand{\sectionbox}[1]{
+  \vspace{0.5em}
+  \noindent\fbox{\textbf{#1}}
+  \vspace{0.5em}
+}
 
-5.  **참(True) / 거짓(False) 판단 (ACK piggyback):**
-    *   **거짓 (False)**. Host B가 보낼 데이터가 없더라도, Host A가 보낸 데이터의 수신 확인(ACK)을 독립적인 세그먼트로 Host A에게 보내야 합니다. TCP는 신뢰적인 전송(reliable delivery)을 위해 ACKs에 의존하며, Host B는 ACK를 피기백(piggyback)할 수 없더라도 ACK를 보내야 합니다.
+\setlength{\parindent}{0pt}
 
-6.  **참(True) / 거짓(False) 판단 (unacknowledged bytes):**
-    *   **참 (True)** [80c]. Host A가 아직 ACK를 받지 못한 채 보낼 수 있는 바이트의 수(in-flight data)는 수신자가 광고하는 수신 윈도우 크기($rwnd$)에 의해 제한됩니다. $rwnd$는 수신 버퍼($RcvBuffer$)의 여유 공간을 나타내므로, $rwnd$를 따르는 한 송신자가 보낸 데이터는 $RcvBuffer$ 크기를 초과하여 버퍼 오버플로우를 일으키지 않습니다 [48, 49, 80c].
+\begin{document}
 
-7.  **QUIC (Quick UDP Internet Connections):**
-    *   QUIC은 **UDP** 위에 구현된 **애플리케이션 계층 프로토콜**입니다.
-    *   **주요 이점:** TCP는 연결 설정(TCP 3-way handshake)과 보안 설정(TLS handshake)을 순차적으로 수행하는 **두 번의 직렬 핸드셰이크**를 필요로 하는 반면, QUIC은 이 모든 기능(신뢰성, 혼잡 제어, 인증, 암호화, 상태 설정)을 **하나의 핸드셰이크(1 RTT)**로 완료하여 지연 시간을 줄입니다.
+\begin{center}
+  \Large\textbf{2025학년도 컴퓨터네트워크 midterm 대비 연습문제 정답 및 해설}\\[8pt]
+  \large\textbf{Chapter 3. Transport Layer}\\[5pt]
+  \small\textbf{contact: \href{mailto:wrim0923@ewhain.net}{wrim0923@ewhain.net} | github: \href{https://github.com/RainyForest23}{RainyForest23}}\\[5pt]
+  \small\textcolor{gray}{Last updated: \today}
+\end{center}
 
-8.  **QUIC의 신뢰성/혼잡 제어 구현 위치:**
-    *   QUIC은 UDP 상에서 동작하지만, 신뢰할 수 있는 데이터 전송, 혼잡 제어, 보안 등의 기능을 **애플리케이션 계층**에서 직접 구현합니다.
+\vspace{1cm}
 
-### II. Mux/Demux 및 Socket 해설
+% --- 빠른 정답 ---
+\section*{빠른 정답}
+\noindent\rule{\textwidth}{0.6pt}
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{*{5}{p{0.19\textwidth}}}
+\toprule
+\textbf{1.} (해설 참조) & \textbf{2.} 호스트 & \textbf{3.} TCP/UDP & \textbf{4.} (해설 참조) & \textbf{5.} False \\
+\textbf{6.} True & \textbf{7.} UDP, (해설 참조) & \textbf{8.} Application & \textbf{9.} 포트 번호 & \textbf{10.} (해설 참조) \\
+\textbf{11.} 목적지 포트 & \textbf{12.} 4-tuple & \textbf{13.} (해설 참조) & \textbf{14.} (해설 참조) & \textbf{15.} Application \\
+\textbf{16.} (해설 참조) & \textbf{17.} (해설 참조) & \textbf{18.} wraparound & \textbf{19.} (해설 참조) & \textbf{20.} (해설 참조) \\
+\textbf{21.} (해설 참조) & \textbf{22.} (해설 참조) & \textbf{23.} 207, 127 & \textbf{24.} (해설 참조) & \textbf{25.} (해설 참조) \\
+\textbf{26.} 3 dup ACK & \textbf{27.} (해설 참조) & \textbf{28.} (해설 참조) & \textbf{29.} AIMD & \textbf{30.} (해설 참조) \\
+\textbf{31.} (해설 참조) & \textbf{32.} cwnd/2, 1 & \textbf{33.} (해설 참조) & \textbf{34.} (해설 참조) & \textbf{35.} No \\
+\textbf{36.} (해설 참조) & \textbf{37.} (계산 참조) & \textbf{38.} (계산 참조) &  &  \\
+\bottomrule
+\end{tabular}
+\end{center}
 
-9.  **Multiplexing 시 정보:**
-    *   송신자는 Transport Header에 **Source Port Number (출발지 포트 번호)**와 **Destination Port Number (목적지 포트 번호)**를 추가합니다.
-    *   이 정보는 수신자 측에서 수신된 세그먼트를 올바른 프로세스/소켓으로 전달하는 **Demultiplexing (역다중화)**에 사용됩니다.
+\newpage
 
-10. **세그먼트 전달에 활용되는 정보:**
-    *   호스트는 IP 데이터그램의 **Source IP Address (출발지 IP 주소)** 및 **Destination IP Address (목적지 IP 주소)**와 세그먼트 헤더의 **Source Port Number** 및 **Destination Port Number**를 사용하여 올바른 소켓으로 세그먼트를 전달합니다.
+% --- 상세 해설 ---
+\section*{상세 해설}
+\noindent\rule{\textwidth}{0.8pt}
 
-11. **Connectionless (UDP) Demultiplexing:**
-    *   수신 호스트는 주로 **Destination Port Number (목적지 포트 번호)**를 확인하여 올바른 소켓으로 UDP 데이터그램을 전달합니다.
-    *   동일한 목적지 포트 번호를 가지는 UDP 데이터그램은 출발지 IP 주소나 출발지 포트 번호가 다르더라도 목적지 호스트의 동일한 소켓으로 전달됩니다.
+\begin{enumerate}[itemsep=2.5em, leftmargin=2em, label={}]
 
-12. **Connection-oriented (TCP) Demultiplexing:**
-    *   수신 호스트는 수신된 TCP 세그먼트를 올바른 소켓으로 전달하기 위해 다음 4가지 정보(4-tuple)를 모두 사용합니다:
-        1.  Source IP Address (출발지 IP 주소)
-        2.  Source Port Number (출발지 포트 번호)
-        3.  Destination IP Address (목적지 IP 주소)
-        4.  Destination Port Number (목적지 포트 번호)
+\item[] \sectionbox{I. 용어 및 기본 개념 (8문제)}
 
-13. **웹 서버의 소켓 식별:**
-    *   웹 서버가 다수의 클라이언트와 동시에 통신할 때, 각 연결은 고유한 **4-tuple**로 식별됩니다.
-    *   서버의 IP 주소와 목적지 포트 번호는 같더라도, 클라이언트마다 **출발지 IP 주소**와 **출발지 포트 번호**가 다르기 때문에 서버는 이 4-tuple을 사용하여 각 클라이언트와의 연결에 해당하는 소켓을 구별합니다.
+\item[\textbf{1.}] Transport Layer의 주요 목표(goals) 5가지를 나열하시오.
+\vspace{0.5em}
 
-### III. UDP 특징 및 Checksum 해설
+\noindent\textbf{정답:}
+\begin{enumerate}[itemsep=0.3em]
+    \item Multiplexing (다중화) 및 Demultiplexing (역다중화)
+    \item Reliable Data Transfer (신뢰할 수 있는 데이터 전송)
+    \item Flow Control (흐름 제어)
+    \item Congestion Control (혼잡 제어)
+    \item End-to-end error detection (종단 간 오류 감지)
+\end{enumerate}
 
-14. **UDP의 제어 우위:**
-    *   **세그먼트에 담을 데이터 (What data is sent):** TCP는 신뢰적인 전송을 위해 데이터를 세그먼트로 나누고 관리하지만, UDP는 "bare bones" 프로토콜로, 애플리케이션 계층 메시지를 받아서 그대로 캡슐화하므로, 애플리케이션 개발자가 세그먼트에 담을 데이터에 대해 더 세밀한 제어를 할 수 있습니다 [17, 19, 86a].
-    *   **세그먼트 전송 시점 (When segment is sent):** UDP는 **혼잡 제어(congestion control)**를 수행하지 않으므로, 애플리케이션은 원하는 만큼 빠르게 데이터를 "blast away" 할 수 있습니다. TCP는 혼잡 제어 및 흐름 제어로 인해 전송 시점을 조정해야 합니다 [15, 87b].
+\small\textbf{해설:} Transport Layer는 서로 다른 호스트에서 실행되는 애플리케이션 프로세스 간의 논리적 통신을 제공합니다. TCP의 경우 위의 모든 기능을 제공하지만, UDP는 기본적인 다중화/역다중화와 에러 체크만 제공합니다.
 
-15. **UDP 상의 신뢰적 전송:**
-    *   **가능합니다.** 애플리케이션 개발자는 신뢰성을 확보하기 위해 필요한 기능(예: 오류 복구, 시퀀스 번호, ACK, 타임아웃/재전송)을 **애플리케이션 계층**에 직접 추가하여 구현해야 합니다 [18, 78 R3].
+\item[\textbf{2.}] Network Layer는 무엇 간의 논리적 통신을 제공하는가?
+\vspace{0.5em}
 
-16. **UDP 데이터그램 형식의 4개 헤더 필드:**
-    1.  Source Port Number (출발지 포트 번호)
-    2.  Destination Port Number (목적지 포트 번호)
-    3.  Length (UDP 데이터그램의 바이트 길이, 헤더 포함)
-    4.  Checksum (체크섬)
+\noindent\textbf{정답:} 호스트 (hosts)
 
-17. **Internet Checksum:**
-    *   **송신자 계산 방법:** 세그먼트의 내용(헤더 필드와 애플리케이션 메시지 페이로드 포함)을 16비트 정수의 시퀀스로 취급하고, 이 내용들의 **1의 보수 합(one’s complement sum)**을 계산합니다. 송신자는 이 결과 값(1의 보수)을 체크섬 필드에 넣습니다.
-    *   **오류 확신 불가 이유:** 체크섬은 단지 오류를 감지하는 것을 목표로 합니다. 수신자가 계산한 체크섬이 수신된 값과 일치하더라도, 세그먼트 내에서 비트 오류가 발생했지만 이 오류들이 합산 과정에서 서로 상쇄되어 (예: 0이 1로 바뀐 비트와 1이 0으로 바뀐 비트가 동시에 발생) 최종 1의 보수 합이 원래 값과 동일하게 나올 수 있기 때문에, 오류가 발생하지 않았다고 **절대적으로 확신할 수는 없습니다** [21, 85 P2].
+\small\textbf{해설:} Transport Layer는 프로세스 간의 논리적 통신을 제공하는 반면, Network Layer(IP)는 호스트 간의 논리적 통신을 제공합니다.
 
-18. **Internet Checksum의 Carry out 처리:**
-    *   1의 보수 합을 계산할 때 가장 왼쪽 비트에서 **carry out (올림)**이 발생하면, 그 올림을 결과 값에 **1을 더하는 방식으로 처리**해야 합니다 (end-around carry).
+\item[\textbf{3.}] TCP와 UDP의 풀네임과 특징 비교
+\vspace{0.5em}
 
-### IV. TCP RDT 및 Flow Control 해설
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item TCP: Transmission Control Protocol / 연결 지향 / 신뢰성 있음
+    \item UDP: User Datagram Protocol / 비연결 / 신뢰성 없음
+\end{itemize}
 
-19. **Sequence Number와 Acknowledgement의 역할:**
-    *   **Sequence Number (순서 번호):** 송신자로부터 수신자로 흐르는 데이터 패킷의 순차적인 번호를 매기는 데 사용됩니다. TCP에서 순서 번호는 세그먼트의 첫 번째 데이터 바이트를 기준으로 합니다. 수신자는 이 번호를 통해 손실된 패킷(순서 번호의 간격)이나 중복된 패킷을 감지합니다.
-    *   **Acknowledgement Number (확인 번호):** 수신자가 송신자에게 **다음에 기대하는 바이트의 순서 번호**를 알려주는 데 사용됩니다. TCP는 **누적 ACK (cumulative ACK)** 방식을 사용합니다.
+\small\textbf{해설:} TCP는 연결 설정, 신뢰성 있는 전송, 흐름 제어, 혼잡 제어를 제공하는 반면, UDP는 최소한의 서비스만 제공하여 빠르고 오버헤드가 적습니다.
 
-20. **재전송된 세그먼트의 SampleRTT 측정 회피 이유:**
-    *   TCP는 재전송된 세그먼트를 사용하여 SampleRTT를 측정하는 것을 피합니다. 그 이유는 송신자가 현재 수신한 ACK가 원래 전송된 세그먼트에 대한 응답인지, 아니면 재전송된 세그먼트에 대한 응답인지 **구별할 수 없기 때문**입니다. 이로 인해 부정확한 RTT 추정값이 계산될 수 있습니다.
+\item[\textbf{4.}] TCP의 세그먼트 송수신 과정
+\vspace{0.5em}
 
-21. **EstimatedRTT 계산 공식 및 $\alpha$ 값:**
-    *   공식: $EstimatedRTT = (1-\alpha) \times EstimatedRTT + \alpha \times SampleRTT$.
-    *   일반적인 $\alpha$ 값은 **0.125**입니다.
+\noindent\textbf{정답:} 송신자 측에서는 Application Layer의 메시지를 여러 개의 세그먼트(segments)로 나누어 Transport Header를 추가한 후 IP 계층(Network Layer)으로 전달합니다. 수신자 측에서는 세그먼트를 수신하고 헤더 값을 확인하여 세그먼트들을 재조립(reassembles)하여 메시지를 애플리케이션 계층으로 전달합니다.
 
-22. **Timeout Interval 계산 공식:**
-    *   $TimeoutInterval$은 $EstimatedRTT$와 안전 마진($4 \times DevRTT$)을 더하여 계산됩니다.
-    *   공식: $TimeoutInterval = EstimatedRTT + 4 \times DevRTT$.
-    *   여기서 $DevRTT$는 $DevRTT = (1-\beta) \times DevRTT + \beta \times |SampleRTT-EstimatedRTT|$ 공식을 통해 계산됩니다 ($\beta$는 일반적으로 0.25).
+\item[\textbf{5.}] ACK 전송 관련 True/False
+\vspace{0.5em}
 
-23. **TCP Sequence/ACK Number 계산:**
-    *   **S2의 Sequence Number:** Host B는 126번 바이트까지 수신했습니다. S1은 Seq=127, 80바이트입니다 (127~206 바이트). 따라서 S2는 207번 바이트부터 시작합니다. **Sequence Number = 207** [88a].
-    *   **S2가 먼저 도착했을 경우 B의 ACK Number:** Host B는 127번 바이트부터 기대하고 있습니다. S2(Seq=207)가 먼저 도착하면 순서가 맞지 않는(out-of-order) 세그먼트로 간주되어 간격(Gap)이 감지됩니다. 이 경우 B는 **Sequence Number 127**을 가리키는 중복 ACK를 즉시 전송합니다. 이는 다음에 기대하는 바이트가 127번부터임을 나타냅니다 [42, 89c].
+\noindent\textbf{정답:} False
 
-24. **TCP Flow Control 목적 및 rwnd:**
-    *   **목적:** 수신자가 너무 많은 데이터 또는 너무 빠른 속도로 데이터를 전송받아 수신 버퍼(Receiver's Buffer)가 넘치는 것(overflow)을 방지하여 수신자를 압도하지 않도록 송신자의 전송 속도를 제어하는 것입니다.
-    *   **rwnd (Receive Window):** 수신자의 TCP 소켓 버퍼에서 **현재 사용 가능한 여유 공간(free buffer space)**의 바이트 수입니다. 이 값은 수신자로부터 송신자에게 보내는 TCP 세그먼트의 헤더에 포함되어 광고됩니다.
+\small\textbf{해설:} Host B가 보낼 데이터가 없더라도 Host A가 보낸 데이터의 수신 확인(ACK)을 독립적인 세그먼트로 보내야 합니다. TCP는 신뢰적인 전송을 위해 ACK에 의존하며, 피기백이 불가능한 경우에도 ACK를 전송해야 합니다.
 
-25. **TCP Flow Control의 영향:**
-    *   Host A의 전송 능력(120 Mbps)이 Host B의 데이터 처리 능력(50 Mbps)보다 훨씬 빠릅니다. TCP Flow Control이 없다면 Host B의 수신 버퍼가 오버플로우될 것입니다.
-    *   Flow Control 덕분에, Host B는 $rwnd$를 통해 수신 버퍼의 남은 공간을 A에게 광고하고, A는 이 $rwnd$를 초과하여 데이터를 전송하지 않도록 제한됩니다. 궁극적으로 A의 전송 속도는 B가 데이터를 읽어내는 최대 속도인 **50 Mbps**로 제한됩니다.
+\item[\textbf{6.}] Unacknowledged bytes와 RcvBuffer 관계
+\vspace{0.5em}
 
-26. **TCP Fast Retransmit 메커니즘:**
-    *   TCP Fast Retransmit은 **타임아웃(timeout)** 기간이 상대적으로 길어 발생하는 지연을 줄이기 위해 사용됩니다.
-    *   송신자가 동일한 데이터에 대한 ACK를 **세 번 추가적으로 (Triple Duplicate ACKs)** 수신했을 때, 송신자는 타임아웃을 기다리지 않고 즉시 가장 작은 순서 번호를 가진(가장 오래된) 아직 확인되지 않은(unACKed) 세그먼트를 재전송합니다.
+\noindent\textbf{정답:} True
 
-### V. TCP Congestion Control 해설
+\small\textbf{해설:} Host A가 보낼 수 있는 unacknowledged bytes의 수는 수신자가 광고하는 rwnd(receive window) 값에 의해 제한됩니다. rwnd는 수신 버퍼의 여유 공간을 나타내므로, rwnd를 따르는 한 수신 버퍼 오버플로우를 방지할 수 있습니다.
 
-27. **혼잡(Congestion)의 두 가지 주요 징후:**
-    1.  **긴 지연 시간 (Long delays):** 라우터 버퍼 내에서의 큐잉(queueing)으로 인해 발생합니다.
-    2.  **패킷 손실 (Lost packets):** 라우터에서의 버퍼 오버플로우로 인해 발생합니다.
+\item[\textbf{7.}] QUIC의 동작 계층과 이점
+\vspace{0.5em}
 
-28. **TCP의 혼잡 추론 및 전송률 변화:**
-    *   TCP는 네트워크로부터 명시적인 피드백을 받지 않으며, 혼잡은 일반적으로 **손실 이벤트 (loss event)**를 통해 추론됩니다 (Timeout 또는 3 Duplicate ACKs).
-    *   혼잡이 감지되면 (세그먼트 손실 시), TCP 송신자의 전송률(Congestion Window Size, $cwnd$)은 **감소**합니다.
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item 동작 계층: UDP 위에서 동작 (Application Layer에서 구현)
+    \item 주요 이점: TCP handshake와 TLS handshake를 통합하여 연결 설정 시간을 단축합니다. 0-RTT 또는 1-RTT로 연결을 설정할 수 있습니다.
+\end{itemize}
 
-29. **AIMD와 전송률 조정:**
-    *   TCP는 **AIMD (Additive Increase, Multiplicative Decrease)** 방식을 사용합니다.
-    *   **Additive Increase (AI):** 손실이 감지될 때까지 사용 가능한 대역폭을 찾기 위해 $cwnd$를 RTT당 **1 MSS**씩 점진적으로 선형 증가시킵니다.
-    *   **Multiplicative Decrease (MD):** 손실 이벤트(혼잡) 발생 시, 전송률(즉, $cwnd$)을 **절반**으로 줄여(cut in half) 혼잡으로부터 빠르게 물러납니다.
-    *   이 패턴이 반복되어 대역폭을 찾기 위해 **톱니 모양(sawtooth behavior)**으로 $cwnd$가 변화합니다.
+\small\textbf{해설:} TCP는 두 번의 직렬 핸드셰이크를 필요로 하는 반면, QUIC은 모든 기능을 하나의 핸드셰이크로 완료하여 지연 시간을 줄입니다.
 
-30. **Slow Start (SS) 단계의 $cwnd$ 증가 방식:**
-    *   Slow Start 단계는 연결 시작 시 $cwnd$를 **1 MSS**로 설정하는 것부터 시작합니다.
-    *   $cwnd$는 RTT당 지수적으로 증가합니다. 구체적으로, **ACK가 수신될 때마다 $cwnd$를 1 MSS씩 증가시킵니다**. 이는 매 RTT마다 $cwnd$가 두 배로 증가하는 효과를 낳습니다.
+\item[\textbf{8.}] QUIC의 기능 구현 위치
+\vspace{0.5em}
 
-31. **Slow Start 종료 및 Congestion Avoidance 전환 임계값 (ssthresh):**
-    *   $cwnd$가 **ssthresh** 값에 도달하면 지수적 증가(SS)에서 선형적 증가(CA)로 전환됩니다.
-    *   **ssthresh**는 이전 손실 이벤트 직전 $cwnd$ 값의 **절반(1/2)**으로 설정됩니다.
+\noindent\textbf{정답:} Application Layer (애플리케이션 계층 또는 사용자 공간)
 
-32. **TCP Tahoe와 TCP Reno의 Timeout 시 설정:**
-    *   손실이 **Timeout**으로 감지되었을 경우, TCP Tahoe와 TCP Reno **모두** 다음 설정을 따릅니다:
-        1.  $ssthresh \leftarrow cwnd / 2$
-        2.  $cwnd \leftarrow 1$ (Slow Start 상태로 진입)
+\small\textbf{해설:} QUIC은 UDP 위에서 동작하지만 신뢰성, 혼잡 제어 등의 기능을 Application Layer에서 직접 구현합니다. 이를 통해 OS 커널 수정 없이 빠른 프로토콜 개선이 가능합니다.
 
-33. **TCP Reno의 Triple Duplicate ACK 시 설정:**
-    *   TCP Reno에서 손실이 **Triple Duplicate ACK**로 감지되었을 경우:
-        1.  $ssthresh \leftarrow cwnd / 2$
-        2.  $cwnd \leftarrow ssthresh$ ($cwnd$를 즉시 절반으로 줄입니다. $cwnd / 2$)
-        3.  송신자는 **Congestion Avoidance (CA)** 상태로 진입합니다 (선형적으로 $cwnd$를 증가시키기 시작합니다).
 
-34. **AIMD의 공평한 대역폭 공유 (Equal RTT):**
-    *   두 연결이 동일한 RTT를 가지고 혼잡 회피 단계에 있다면, AIMD 덕분에 대역폭을 공평하게 공유합니다. 두 연결은 $cwnd$를 동일한 속도로 증가시키다가 혼잡이 발생하면 $cwnd$를 동시에 절반으로 줄입니다 (Multiplicative Decrease). 이 움직임(Sawtooth)은 두 연결의 처리량이 $R/2$ 주변에서 동일하게 유지되도록 합니다 [70, 98b].
+\item[] \sectionbox{II. Mux/Demux 및 Socket (5문제)}
 
-35. **AIMD의 불공평한 대역폭 공유 (Unequal RTT):**
-    *   **No**. 두 연결이 서로 다른 RTT를 가질 경우, RTT가 더 짧은 연결(C1, 50msec)이 RTT가 긴 연결(C2, 100msec)보다 ACK를 더 자주 수신합니다. $cwnd$는 ACK를 받을 때마다 증가하기 때문에, RTT가 짧은 연결이 RTT가 긴 연결보다 더 빠르게 $cwnd$를 키울 수 있고, 장기적으로 병목 링크의 대역폭을 더 많이 차지하게 됩니다.
+\item[\textbf{9.}] Multiplexing과 Transport Header
+\vspace{0.5em}
 
-36. **TCP CUBIC의 $cwnd$ 증가 속도 변화:**
-    *   CUBIC은 $W_{max}$ (이전 손실이 감지된 창 크기)에 가까워지는 것을 목표로 합니다.
-    *   $W_{max}$에서 멀리 떨어져 있을 때는 $cwnd$ 증가 속도를 **더 빠르게** 하여 $W_{max}$에 도달하려고 시도합니다.
-    *   $W_{max}$에 가까워질수록 $cwnd$ 증가 속도를 **더 느리게 (조심스럽게)** 변화시킵니다.
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item 추가 정보: Source Port Number (출발지 포트 번호)와 Destination Port Number (목적지 포트 번호)
+    \item 역할: 수신자 측에서 올바른 프로세스/소켓으로 데이터를 전달하기 위한 Demultiplexing에 사용됩니다.
+\end{itemize}
 
-### VI. 계산 및 분석 문제 해설
+\item[\textbf{10.}] 세그먼트를 올바른 소켓으로 전달하는 방법
+\vspace{0.5em}
 
-37. **TCP RTT 추정 계산 ( $\alpha = 0.125$, $\beta = 0.25$):**
-    *   공식: $EstimatedRTT = (1-\alpha) \times EstimatedRTT + \alpha \times SampleRTT$
-    *   공식: $DevRTT = (1-\beta) \times DevRTT + \beta \times |SampleRTT - EstimatedRTT|$
-    *   공식: $TimeoutInterval = EstimatedRTT + 4 \times DevRTT$
+\noindent\textbf{정답:} IP 데이터그램의 Source/Destination IP Address와 세그먼트 헤더의 Source/Destination Port Number를 사용하여 해당 소켓을 식별하고 데이터를 전달합니다. TCP의 경우 4-tuple을 모두 사용합니다.
 
-| Sample No. | SampleRTT (ms) | EstimatedRTT (ms) | DevRTT (ms) | TimeoutInterval (ms) |
-| :---: | :---: | :---: | :---: | :---: |
-| 초기 값 | - | 100 | 5 | 120 |
-| 1 | 106 | **100.75** | **5.0625** | **121.0** |
-| 2 | 120 | **103.15625** | **8.0078125** | **135.1875** |
+\item[\textbf{11.}] UDP Demultiplexing
+\vspace{0.5em}
 
-**계산 과정:**
-*   **Sample 1 (SampleRTT = 106):**
-    *   EstimatedRTT = $(0.875 \times 100) + (0.125 \times 106) = 87.5 + 13.25 = 100.75$
-    *   Deviation = $|106 - 100.75| = 5.25$
-    *   DevRTT = $(0.75 \times 5) + (0.25 \times 5.25) = 3.75 + 1.3125 = 5.0625$
-    *   TimeoutInterval = $100.75 + (4 \times 5.0625) = 100.75 + 20.25 = 121.0$
-*   **Sample 2 (SampleRTT = 120):**
-    *   EstimatedRTT = $(0.875 \times 100.75) + (0.125 \times 120) \approx 88.156 + 15 = 103.15625$
-    *   Deviation = $|120 - 103.15625| \approx 16.84375$
-    *   DevRTT = $(0.75 \times 5.0625) + (0.25 \times 16.84375) \approx 3.796 + 4.210 = 8.0078125$
-    *   TimeoutInterval = $103.15625 + (4 \times 8.0078125) \approx 103.15625 + 32.03125 = 135.1875$
+\noindent\textbf{정답:} Destination Port Number (목적지 포트 번호)
 
-38. **TCP Congestion Control (AIMD/Slow Start 분석):** (P15 그림 데이터 기반)
+\small\textbf{해설:} UDP는 주로 목적지 포트 번호를 확인하여 올바른 소켓으로 데이터그램을 전달합니다. 동일한 목적지 포트 번호를 가지는 UDP 데이터그램은 출발지 정보가 달라도 동일한 소켓으로 전달됩니다.
 
-| Transmission Round | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| $cwnd$ (MSS) | 1 | 2 | 4 | 8 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 12 | 13 | 14 |
+\item[\textbf{12.}] TCP Demultiplexing의 4-tuple
+\vspace{0.5em}
 
-*   **a. Slow Start (SS) 구간:** $cwnd$가 RTT당 지수적으로 증가합니다 (1, 2, 4, 8, 16).
-    *   **Transmission Round 1, 2, 3, 4, 5**.
-*   **b. Congestion Avoidance (CA) 구간:** $cwnd$가 RTT당 1 MSS씩 선형적으로 증가합니다 (17, 18, 19, ..., 24).
-    *   **Transmission Round 6 through 13**.
-*   **c. 손실 감지 방식 (Round 13 -> 14):** $cwnd$가 24에서 12로 정확히 **절반**으로 줄었으며 (MD), $cwnd$가 1 MSS로 떨어지지 않았습니다. 이는 **Triple Duplicate ACK**로 손실이 감지되었음을 의미합니다 (TCP Reno).
-*   **d. 14번째 Transmission Round 직전 ssthresh 값:** Triple Duplicate ACK가 발생했을 때 $ssthresh$는 손실 직전 $cwnd$의 절반으로 설정됩니다. $ssthresh = 24 / 2 = **12**$ MSS.
+\noindent\textbf{정답:}
+\begin{enumerate}[itemsep=0.3em]
+    \item Source IP Address (출발지 IP 주소)
+    \item Source Port Number (출발지 포트 번호)
+    \item Destination IP Address (목적지 IP 주소)
+    \item Destination Port Number (목적지 포트 번호)
+\end{enumerate}
+
+\small\textbf{해설:} TCP는 연결 지향 프로토콜이므로 각 연결을 고유하게 식별하기 위해 4-tuple을 사용합니다.
+
+\item[\textbf{13.}] 웹 서버의 TCP 소켓 식별
+\vspace{0.5em}
+
+\noindent\textbf{정답:} 각 TCP 소켓은 4-tuple (출발지 IP, 출발지 포트, 목적지 IP, 목적지 포트)로 고유하게 식별됩니다. 서버는 동일한 포트를 사용하더라도 클라이언트마다 서로 다른 출발지 IP와 포트를 가지므로 각 연결을 구분할 수 있습니다.
+
+
+\item[] \sectionbox{III. UDP 특징 및 Checksum (5문제)}
+
+\item[\textbf{14.}] UDP의 세밀한 제어
+\vspace{0.5em}
+
+\noindent\textbf{정답:} UDP는 혼잡 제어나 재전송 메커니즘이 없으므로 애플리케이션이 소켓에 데이터를 쓰는 즉시 전송됩니다. TCP는 세그먼트를 나누고 관리하지만, UDP는 애플리케이션 계층 메시지를 그대로 캡슐화하므로 데이터와 전송 시점에 대한 더 세밀한 제어가 가능합니다.
+
+\item[\textbf{15.}] UDP에서 신뢰성 추가
+\vspace{0.5em}
+
+\noindent\textbf{정답:} Application Layer (애플리케이션 계층)
+
+\small\textbf{해설:} UDP는 신뢰성을 제공하지 않지만, 필요한 경우 애플리케이션 개발자가 Application Layer에서 ACK, 재전송, 타임아웃 등의 메커니즘을 직접 구현할 수 있습니다.
+
+\item[\textbf{16.}] UDP 헤더의 4개 필드
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+\begin{enumerate}[itemsep=0.3em]
+    \item Source Port Number (출발지 포트 번호)
+    \item Destination Port Number (목적지 포트 번호)
+    \item Length (길이)
+    \item Checksum (체크섬)
+\end{enumerate}
+
+\small\textbf{해설:} UDP 헤더는 각 필드가 16비트(2바이트)로 총 8바이트입니다.
+
+\item[\textbf{17.}] Internet Checksum
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item 계산 방법: 세그먼트 내용을 16비트 정수의 시퀀스로 취급하고 1의 보수 합(one's complement sum)을 계산한 후, 그 결과의 1의 보수를 취합니다.
+    \item 확신할 수 없는 이유: 여러 비트가 변경되어 오류들이 서로 상쇄되면 checksum이 우연히 같은 값이 될 수 있습니다. Checksum은 단순한 오류 검출 메커니즘이므로 모든 오류를 감지하지 못합니다.
+\end{itemize}
+
+\item[\textbf{18.}] Checksum의 carry out 처리
+\vspace{0.5em}
+
+\noindent\textbf{정답:} Carry out이 발생하면 이를 결과 값에 1을 더하는 방식으로 처리합니다 (end-around carry, wraparound).
+
+
+\item[] \sectionbox{IV. TCP RDT 및 Flow Control (8문제)}
+
+\item[\textbf{19.}] Sequence Number와 Acknowledgement의 역할
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item Sequence Number: 세그먼트의 첫 번째 바이트가 전체 데이터 스트림에서 몇 번째 바이트인지를 나타냅니다. 수신자가 순서대로 재조립하고 손실/중복 패킷을 감지하는 데 사용됩니다.
+    \item Acknowledgement: 수신자가 다음에 받기를 기대하는 바이트 번호를 나타냅니다. 누적 확인응답(cumulative ACK) 방식으로 해당 번호 이전의 모든 바이트를 성공적으로 수신했음을 의미합니다.
+\end{itemize}
+
+\item[\textbf{20.}] 재전송 세그먼트로 RTT를 측정하지 않는 이유
+\vspace{0.5em}
+
+\noindent\textbf{정답:} 재전송된 세그먼트에 대한 ACK가 도착했을 때, 이것이 원래 전송에 대한 응답인지 재전송에 대한 응답인지 구분할 수 없기 때문입니다 (retransmission ambiguity problem). 이로 인해 부정확한 RTT 추정값이 계산될 수 있습니다.
+
+\item[\textbf{21.}] EstimatedRTT 계산 공식
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item 공식: EstimatedRTT = $(1-\alpha) \times \text{EstimatedRTT} + \alpha \times \text{SampleRTT}$
+    \item $\alpha$의 값: 0.125 (일반적으로 1/8)
+\end{itemize}
+
+\small\textbf{해설:} EWMA(Exponential Weighted Moving Average)를 사용하여 과거 값에 더 큰 가중치를 두고 최근 측정값을 반영합니다.
+
+\item[\textbf{22.}] Timeout Interval 계산 공식
+\vspace{0.5em}
+
+\noindent\textbf{정답:} TimeoutInterval = $\text{EstimatedRTT} + 4 \times \text{DevRTT}$
+
+\small\textbf{해설:} DevRTT는 RTT의 변동성을 나타내며, $\beta = 0.25$를 사용하여 계산됩니다:
+
+DevRTT = $(1-\beta) \times \text{DevRTT} + \beta \times |\text{SampleRTT} - \text{EstimatedRTT}|$
+
+\item[\textbf{23.}] TCP Sequence Number와 ACK 계산
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item S2의 Sequence Number: 207 (= 127 + 80)
+    \item S2 수신 후 B가 보내는 ACK: 127 (S1을 기다리고 있음)
+\end{itemize}
+
+\small\textbf{해설:} TCP는 순서가 맞지 않는 세그먼트를 받으면 중복 ACK를 보냅니다. B는 아직 127번부터 시작하는 데이터를 받지 못했으므로 ACK=127을 보냅니다.
+
+\item[\textbf{24.}] TCP Flow Control의 목적과 rwnd
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item 목적: 송신자가 수신자의 버퍼를 오버플로우시키지 않도록 전송 속도를 조절하는 것
+    \item rwnd: 수신자의 수신 버퍼에서 현재 사용 가능한 여유 공간의 크기(바이트 단위)
+\end{itemize}
+
+\item[\textbf{25.}] Flow Control의 작동
+\vspace{0.5em}
+
+\noindent\textbf{정답:} Host A의 전송 능력(120 Mbps)이 Host B의 데이터 처리 능력(50 Mbps)보다 빠릅니다. Flow Control 덕분에 B는 rwnd를 통해 수신 버퍼의 남은 공간을 A에게 광고하고, A는 이 rwnd를 초과하여 데이터를 전송하지 않도록 제한됩니다. 궁극적으로 전송 속도는 B가 데이터를 읽어내는 최대 속도인 50 Mbps로 제한됩니다.
+
+\item[\textbf{26.}] TCP Fast Retransmit
+\vspace{0.5em}
+
+\noindent\textbf{정답:} 송신자가 동일한 ACK를 3번 중복으로 받으면(Triple Duplicate ACKs), 타임아웃을 기다리지 않고 해당 세그먼트를 즉시 재전송합니다.
+
+\small\textbf{해설:} 이를 통해 패킷 손실을 빠르게 감지하고 복구할 수 있습니다.
+
+
+\item[] \sectionbox{V. TCP Congestion Control (12문제)}
+
+\item[\textbf{27.}] 혼잡의 두 가지 징후
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item 긴 지연 시간 (Long delays) - 라우터 버퍼 내 큐잉으로 인한 발생
+    \item 패킷 손실 (Lost packets) - 버퍼 오버플로우로 인한 발생
+\end{itemize}
+
+\item[\textbf{28.}] TCP의 혼잡 감지와 cwnd 변화
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item Loss event: 타임아웃(Timeout) 또는 3 duplicate ACKs
+    \item cwnd 변화: 감소합니다. 타임아웃 시 1 MSS로, 3 duplicate ACKs 시 절반으로 감소합니다.
+\end{itemize}
+
+\item[\textbf{29.}] AIMD와 TCP
+\vspace{0.5em}
+
+\noindent\textbf{정답:} AIMD (Additive Increase Multiplicative Decrease)는 손실이 감지될 때까지 cwnd를 RTT당 1 MSS씩 점진적으로 선형 증가시키고(Additive Increase), 손실 이벤트 발생 시 cwnd를 절반으로 줄이는(Multiplicative Decrease) 방식입니다. 이 패턴이 반복되어 톱니 모양(sawtooth behavior)으로 cwnd가 변화하며 대역폭을 공정하게 공유합니다.
+
+\item[\textbf{30.}] Slow Start의 cwnd 증가 방식
+\vspace{0.5em}
+
+\noindent\textbf{정답:} Slow Start 단계에서는 연결 시작 시 cwnd를 1 MSS로 설정합니다. ACK를 받을 때마다 cwnd를 1 MSS씩 증가시킵니다. 따라서 RTT마다 cwnd가 2배로 증가하여 지수적 증가(exponential growth) 패턴을 보입니다. 예: 1 → 2 → 4 → 8 → 16 MSS
+
+\item[\textbf{31.}] ssthresh 설정 시기와 값
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item 언제: cwnd가 ssthresh에 도달하거나 혼잡(loss event)이 감지될 때
+    \item 값: 혼잡 발생 시 이전 손실 이벤트 직전 cwnd 값의 절반(1/2)으로 설정됩니다.
+\end{itemize}
+
+\small\textbf{해설:} cwnd가 ssthresh에 도달하면 Slow Start에서 Congestion Avoidance로 전환됩니다.
+
+\item[\textbf{32.}] TCP Tahoe/Reno의 Timeout 처리
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item ssthresh = cwnd / 2 (현재 cwnd의 절반)
+    \item cwnd = 1 MSS
+\end{itemize}
+
+\small\textbf{해설:} Timeout은 심각한 혼잡 신호로 간주되어 cwnd를 1 MSS로 초기화하고 Slow Start를 다시 시작합니다.
+
+\item[\textbf{33.}] TCP Reno의 Triple Duplicate ACK 처리
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item ssthresh = cwnd / 2
+    \item cwnd = ssthresh (cwnd / 2)
+    \item 진입 상태: Congestion Avoidance (CA)
+\end{itemize}
+
+\small\textbf{해설:} TCP Reno는 3 duplicate ACKs를 timeout보다 가벼운 혼잡 신호로 간주하여 cwnd를 절반으로만 줄이고 Congestion Avoidance 상태로 전환합니다.
+
+\item[\textbf{34.}] AIMD와 공평성
+\vspace{0.5em}
+
+\noindent\textbf{정답:} 두 연결이 동일한 RTT를 가지면 AIMD 알고리즘에 의해 대역폭을 공평하게 나눕니다. Sawtooth 패턴에서 두 연결은 공평성 선을 향해 수렴합니다. Additive Increase 시 두 연결이 동시에 증가하고, 혼잡 발생 시 둘 다 절반으로 감소하여 장기적으로 R/2씩 사용하게 됩니다.
+
+\item[\textbf{35.}] RTT가 다를 때의 공평성
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+\begin{itemize}[itemsep=0.3em]
+    \item 답: No (아니요)
+    \item 이유: RTT가 짧은 C1(50msec)이 더 빨리 ACK를 받으므로 cwnd를 더 빠르게 증가시킵니다. cwnd는 ACK를 받을 때마다 증가하기 때문에 RTT가 짧은 연결이 더 많은 대역폭을 차지하게 됩니다.
+\end{itemize}
+
+\item[\textbf{36.}] TCP CUBIC의 cwnd 조정
+\vspace{0.5em}
+
+\noindent\textbf{정답:} CUBIC은 $W_{max}$ (이전 손실이 감지된 창 크기)에 가까워지는 것을 목표로 합니다. $W_{max}$에서 멀리 떨어져 있을 때는 cwnd 증가 속도를 더 빠르게 하여 $W_{max}$에 도달하려 하고, $W_{max}$에 가까워질수록 cwnd 증가 속도를 더 느리게(조심스럽게) 변화시킵니다. 이는 3차 함수(cubic function)를 사용하여 구현됩니다.
+
+
+\item[] \sectionbox{VI. 계산 및 분석 문제 (2문제)}
+
+\item[\textbf{37.}] \textbf{[TCP RTT 추정 계산]}
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+
+\textbf{Sample 1 (SampleRTT = 106ms):}
+\begin{itemize}[itemsep=0.2em]
+    \item EstimatedRTT = $0.875 \times 100 + 0.125 \times 106 = 100.75$ ms
+    \item Deviation = $|106 - 100.75| = 5.25$ ms
+    \item DevRTT = $0.75 \times 5 + 0.25 \times 5.25 = 5.0625$ ms
+    \item TimeoutInterval = $100.75 + 4 \times 5.0625 = 121.0$ ms
+\end{itemize}
+
+\textbf{Sample 2 (SampleRTT = 120ms):}
+\begin{itemize}[itemsep=0.2em]
+    \item EstimatedRTT = $0.875 \times 100.75 + 0.125 \times 120 = 103.15625$ ms
+    \item Deviation = $|120 - 103.15625| = 16.84375$ ms
+    \item DevRTT = $0.75 \times 5.0625 + 0.25 \times 16.84375 = 8.0078125$ ms
+    \item TimeoutInterval = $103.15625 + 4 \times 8.0078125 = 135.1875$ ms
+\end{itemize}
+
+\item[\textbf{38.}] \textbf{[TCP Congestion Control 분석]}
+\vspace{0.5em}
+
+\noindent\textbf{정답:}
+
+\begin{enumerate}[label=\alph*., itemsep=0.3em]
+    \item \textbf{Slow Start 구간:} Transmission Round 1, 2, 3, 4, 5
+
+    cwnd가 지수적으로 증가 (1 → 2 → 4 → 8 → 16)
+
+    \item \textbf{Congestion Avoidance 구간:} Transmission Round 6-13, 14-16
+
+    cwnd가 선형적으로 증가 (16 → 17 → 18 → ... → 24, 12 → 13 → 14)
+
+    \item \textbf{손실 감지 방식:} Triple Duplicate ACK
+
+    \textbf{이유:} cwnd가 24에서 12로 정확히 절반으로 감소했습니다 (Multiplicative Decrease). Timeout이었다면 cwnd = 1 MSS로 감소했을 것입니다. 이는 TCP Reno의 Triple Duplicate ACK 처리 방식입니다.
+
+    \item \textbf{ssthresh 값:} 12 MSS
+
+    \textbf{이유:} Round 13의 cwnd = 24일 때 손실 발생, ssthresh = 24 / 2 = 12 MSS로 설정되었습니다.
+\end{enumerate}
+
+\small\textbf{해설:} 이 시나리오는 TCP Reno의 전형적인 동작을 보여줍니다. Slow Start로 빠르게 증가한 후 ssthresh(16)에 도달하면 Congestion Avoidance로 전환되어 선형 증가합니다. Triple duplicate ACK로 손실이 감지되면 cwnd를 절반으로 줄이고 Congestion Avoidance를 재개합니다.
+
+\end{enumerate}
+
+\vfill
+\begin{center}
+  \rule{0.9\textwidth}{0.4pt}\\[8pt]
+  {\small\textbf{--- 공부하시느라 수고하셨습니다 ---}}\\[6pt]
+  {\scriptsize ※ 본 해설지는 학습 목적으로 제작되었습니다.}
+\end{center}
+
+\end{document}
